@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>nRF52840 BLE 打字傳輸器</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --card: #1f2937;
+      --line: #334155;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #22c55e;
+      --accent2: #38bdf8;
+      --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: linear-gradient(135deg, #020617, #0f172a 45%, #111827);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 18px;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      background: rgba(17, 24, 39, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 0 0 8px;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    label {
+      display: block;
+      font-size: 14px;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #0b1220;
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 240px;
+      resize: vertical;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      color: white;
+      background: #2563eb;
+    }
+
+    button.secondary { background: #0ea5e9; }
+    button.good { background: #16a34a; }
+    button.warn { background: #ea580c; }
+    button.danger { background: var(--danger); }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .status {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #0b1220;
+      border: 1px solid var(--line);
+      color: #bfdbfe;
+      font-size: 14px;
+    }
+
+    .mono {
+      font-family: Consolas, Menlo, monospace;
+      font-size: 13px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .checkbox {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      min-height: 48px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #0b1220;
+    }
+
+    .checkbox input { transform: scale(1.2); }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 760px) {
+      .grid { grid-template-columns: 1fr; }
+      body { padding: 12px; }
+      h1 { font-size: 21px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>nRF52840 BLE 打字傳輸器</h1>
+      <div class="sub">
+        Android 手機用瀏覽器開啟後，透過 Web Bluetooth 連線到 nRF52840 Pro Micro，將多行文字或上傳的 TXT 內容經由 BLE 傳給開發板，
+        再由開發板用 USB HID Keyboard 方式有線打字到電腦。
+      </div>
+      <div class="status" id="status">尚未連線</div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <button id="btnConnect" class="good">連接藍牙</button>
+        <button id="btnDisconnect" class="danger">中斷連線</button>
+        <button id="btnPing" class="secondary">測試通訊</button>
+      </div>
+      <div class="hint" style="margin-top:10px;">
+        需要使用 <b>HTTPS 網站</b> 或 localhost，並以 Android Chrome 類瀏覽器開啟。請先讓 nRF52840 廣播 Nordic UART Service。
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="grid">
+        <div>
+          <label for="fileInput">上傳 TXT 檔</label>
+          <input id="fileInput" type="file" accept=".txt,text/plain" />
+        </div>
+
+        <div>
+          <label for="speed">打字速度</label>
+          <select id="speed">
+            <option value="5">很慢（每秒 5 字）</option>
+            <option value="10">慢（每秒 10 字）</option>
+            <option value="20" selected>中（每秒 20 字）</option>
+            <option value="35">快（每秒 35 字）</option>
+            <option value="60">很快（每秒 60 字）</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="imeCommand">切換輸入法命令</label>
+          <select id="imeCommand">
+            <option value="">不切換</option>
+            <option value="WIN_SPACE">Windows + Space</option>
+            <option value="CTRL_SPACE">Ctrl + Space</option>
+            <option value="SHIFT_SPACE">Shift + Space</option>
+            <option value="ALT_SHIFT">Alt + Shift</option>
+          </select>
+        </div>
+
+        <div>
+          <label>&nbsp;</label>
+          <div class="checkbox">
+            <input id="autoIme" type="checkbox" checked />
+            <span>打字前先自動切換輸入法</span>
+          </div>
+        </div>
+
+        <div class="full">
+          <label for="textInput">文字輸入區（可直接貼上多行文字）</label>
+          <textarea id="textInput" placeholder="請貼上要傳給 nRF52840 的文字，支援換行。"></textarea>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:12px;">
+        <button id="btnSend" class="good">傳送到開發板</button>
+        <button id="btnStop" class="warn">停止打字</button>
+        <button id="btnClear">清空文字</button>
+      </div>
+      <div class="hint" style="margin-top:10px;">
+        此網頁只負責把資料送到開發板。真正的「模擬鍵盤打字」與「切換輸入法」要由 nRF52840 韌體在 USB HID 端執行。
+      </div>
+    </div>
+
+    <div class="card">
+      <label>接收 / 記錄</label>
+      <div class="status mono"><pre id="logBox">等待操作...</pre></div>
+    </div>
+  </div>
+
+  <script>
+    // Nordic UART Service UUID
+    const NUS_SERVICE_UUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+    const NUS_RX_UUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e'; // Web -> nRF (write)
+    const NUS_TX_UUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e'; // nRF -> Web (notify)
+
+    let device = null;
+    let server = null;
+    let service = null;
+    let rxChar = null;
+    let txChar = null;
+    let busy = false;
+
+    const statusEl = document.getElementById('status');
+    const logBox = document.getElementById('logBox');
+    const textInput = document.getElementById('textInput');
+    const fileInput = document.getElementById('fileInput');
+    const speedEl = document.getElementById('speed');
+    const autoImeEl = document.getElementById('autoIme');
+    const imeCommandEl = document.getElementById('imeCommand');
+
+    function log(msg) {
+      const time = new Date().toLocaleTimeString();
+      logBox.textContent += `\n[${time}] ${msg}`;
+      logBox.parentElement.scrollTop = logBox.parentElement.scrollHeight;
+    }
+
+    function setStatus(msg) {
+      statusEl.textContent = msg;
+    }
+
+    function ensureBluetoothSupport() {
+      if (!navigator.bluetooth) {
+        throw new Error('此瀏覽器不支援 Web Bluetooth。請用 Android Chrome 並透過 HTTPS 開啟。');
+      }
+    }
+
+    function encodeUtf8(str) {
+      return new TextEncoder().encode(str);
+    }
+
+    async function writeLine(str) {
+      if (!rxChar) throw new Error('尚未取得可寫入特徵。');
+      const data = encodeUtf8(str + '\n');
+      await rxChar.writeValueWithoutResponse(data);
+    }
+
+    async function writeChunkedText(str, chunkSize = 120) {
+      for (let i = 0; i < str.length; i += chunkSize) {
+        const part = str.slice(i, i + chunkSize);
+        await writeLine(part);
+        await delay(25);
+      }
+    }
+
+    function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function onDisconnected() {
+      setStatus('裝置已中斷');
+      log('藍牙已中斷。');
+      device = null;
+      server = null;
+      service = null;
+      rxChar = null;
+      txChar = null;
+    }
+
+    async function connectBle() {
+      ensureBluetoothSupport();
+      setStatus('正在搜尋藍牙裝置...');
+
+      device = await navigator.bluetooth.requestDevice({
+        filters: [{ services: [NUS_SERVICE_UUID] }],
+        optionalServices: [NUS_SERVICE_UUID]
+      });
+
+      device.addEventListener('gattserverdisconnected', onDisconnected);
+      server = await device.gatt.connect();
+      service = await server.getPrimaryService(NUS_SERVICE_UUID);
+      rxChar = await service.getCharacteristic(NUS_RX_UUID);
+      txChar = await service.getCharacteristic(NUS_TX_UUID);
+
+      await txChar.startNotifications();
+      txChar.addEventListener('characteristicvaluechanged', (event) => {
+        const value = new TextDecoder().decode(event.target.value);
+        log('裝置回傳：' + value);
+      });
+
+      setStatus('已連線：' + (device.name || '未命名裝置'));
+      log('連線成功。');
+    }
+
+    async function disconnectBle() {
+      if (device && device.gatt && device.gatt.connected) {
+        device.gatt.disconnect();
+      }
+      onDisconnected();
+    }
+
+    async function pingDevice() {
+      if (!rxChar) throw new Error('尚未連線。');
+      await writeLine(JSON.stringify({ cmd: 'ping' }));
+      log('已送出 ping。');
+    }
+
+    async function sendTypingJob() {
+      if (busy) return;
+      if (!rxChar) throw new Error('請先連線藍牙裝置。');
+
+      const text = textInput.value;
+      if (!text.trim()) throw new Error('請先輸入文字或上傳 TXT。');
+
+      busy = true;
+      setStatus('正在送出資料...');
+
+      const payload = {
+        cmd: 'type',
+        cps: Number(speedEl.value),
+        switchIme: !!autoImeEl.checked,
+        imeCommand: imeCommandEl.value,
+        text
+      };
+
+      // 先送開始指令，再分段送文字，最後送結束指令
+      await writeLine(JSON.stringify({
+        cmd: 'type_begin',
+        cps: payload.cps,
+        switchIme: payload.switchIme,
+        imeCommand: payload.imeCommand,
+        totalLength: payload.text.length
+      }));
+
+      await writeChunkedText(payload.text, 120);
+      await writeLine(JSON.stringify({ cmd: 'type_end' }));
+
+      log(`已送出 ${payload.text.length} 字元，速度 ${payload.cps} cps。`);
+      setStatus('資料已送出，等待開發板打字');
+      busy = false;
+    }
+
+    async function stopTyping() {
+      if (!rxChar) throw new Error('尚未連線。');
+      await writeLine(JSON.stringify({ cmd: 'stop' }));
+      log('已送出停止指令。');
+    }
+
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const text = await file.text();
+      textInput.value = text;
+      log(`已載入檔案：${file.name}（${text.length} 字元）`);
+    });
+
+    document.getElementById('btnConnect').addEventListener('click', async () => {
+      try { await connectBle(); } catch (err) { log('連線失敗：' + err.message); setStatus('連線失敗'); }
+    });
+
+    document.getElementById('btnDisconnect').addEventListener('click', async () => {
+      try { await disconnectBle(); } catch (err) { log('中斷失敗：' + err.message); }
+    });
+
+    document.getElementById('btnPing').addEventListener('click', async () => {
+      try { await pingDevice(); } catch (err) { log('測試失敗：' + err.message); }
+    });
+
+    document.getElementById('btnSend').addEventListener('click', async () => {
+      try { await sendTypingJob(); } catch (err) { busy = false; log('傳送失敗：' + err.message); setStatus('傳送失敗'); }
+    });
+
+    document.getElementById('btnStop').addEventListener('click', async () => {
+      try { await stopTyping(); } catch (err) { log('停止失敗：' + err.message); }
+    });
+
+    document.getElementById('btnClear').addEventListener('click', () => {
+      textInput.value = '';
+      log('已清空文字區。');
+    });
+
+    log('頁面已就緒。');
+  </script>
+</body>
+</html>
