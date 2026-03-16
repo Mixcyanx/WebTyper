@@ -284,17 +284,17 @@
       return new TextEncoder().encode(str);
     }
 
-    async function writeLine(str) {
+    async function writeJson(obj) {
       if (!rxChar) throw new Error('尚未取得可寫入特徵。');
-      const data = encodeUtf8(str + '\n');
+      const data = encodeUtf8(JSON.stringify(obj) + '\n');
       await rxChar.writeValueWithoutResponse(data);
     }
 
-    async function writeChunkedText(str, chunkSize = 120) {
+    async function writeChunkedText(str, chunkSize = 60) {
       for (let i = 0; i < str.length; i += chunkSize) {
         const part = str.slice(i, i + chunkSize);
-        await writeLine(part);
-        await delay(25);
+        await writeJson({ cmd: 'text_chunk', data: part });
+        await delay(35);
       }
     }
 
@@ -310,6 +310,7 @@
       service = null;
       rxChar = null;
       txChar = null;
+      busy = false;
     }
 
     async function connectBle() {
@@ -329,8 +330,11 @@
 
       await txChar.startNotifications();
       txChar.addEventListener('characteristicvaluechanged', (event) => {
-        const value = new TextDecoder().decode(event.target.value);
-        log('裝置回傳：' + value);
+        const dataView = event.target.value;
+        const bytes = new Uint8Array(dataView.buffer, dataView.byteOffset, dataView.byteLength);
+        const text = new TextDecoder().decode(bytes);
+        const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join(' ');
+        log(`裝置回傳：${JSON.stringify(text)} | 長度=${bytes.length} | HEX=${hex}`);
       });
 
       setStatus('已連線：' + (device.name || '未命名裝置'));
@@ -346,7 +350,7 @@
 
     async function pingDevice() {
       if (!rxChar) throw new Error('尚未連線。');
-      await writeLine(JSON.stringify({ cmd: 'ping' }));
+      await writeJson({ cmd: 'ping' });
       log('已送出 ping。');
     }
 
@@ -360,34 +364,31 @@
       busy = true;
       setStatus('正在送出資料...');
 
-      const payload = {
-        cmd: 'type',
-        cps: Number(speedEl.value),
-        switchIme: !!autoImeEl.checked,
-        imeCommand: imeCommandEl.value,
-        text
-      };
+      const cps = Number(speedEl.value);
+      const switchIme = !!autoImeEl.checked;
+      const imeCommand = imeCommandEl.value;
 
-      // 先送開始指令，再分段送文字，最後送結束指令
-      await writeLine(JSON.stringify({
+      await writeJson({
         cmd: 'type_begin',
-        cps: payload.cps,
-        switchIme: payload.switchIme,
-        imeCommand: payload.imeCommand,
-        totalLength: payload.text.length
-      }));
+        cps,
+        switchIme,
+        imeCommand,
+        totalLength: text.length
+      });
 
-      await writeChunkedText(payload.text, 120);
-      await writeLine(JSON.stringify({ cmd: 'type_end' }));
+      await delay(60);
+      await writeChunkedText(text, 60);
+      await delay(60);
+      await writeJson({ cmd: 'type_end' });
 
-      log(`已送出 ${payload.text.length} 字元，速度 ${payload.cps} cps。`);
+      log(`已送出 ${text.length} 字元，速度 ${cps} cps。`);
       setStatus('資料已送出，等待開發板打字');
       busy = false;
     }
 
     async function stopTyping() {
       if (!rxChar) throw new Error('尚未連線。');
-      await writeLine(JSON.stringify({ cmd: 'stop' }));
+      await writeJson({ cmd: 'stop' });
       log('已送出停止指令。');
     }
 
