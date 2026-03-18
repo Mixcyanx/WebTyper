@@ -1,0 +1,37 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+if (!s.hasNextInt()) return;
+int n = s.nextInt();
+int m = s.nextInt();
+int[][] g = new int[n][m];
+boolean[][] v = new boolean[n][m];
+Map<Integer, List<int[]>> p = new HashMap<>();
+for (int i = 0; i < n; i++) {
+for (int j = 0; j < m; j++) {
+g[i][j] = s.nextInt();
+p.computeIfAbsent(g[i][j], k -> new ArrayList<>()).add(new int[]{i, j});}}
+int score = 0;
+boolean changed = true;
+while (changed) {
+changed = false;
+for (Integer val : p.keySet()) {
+List<int[]> locs = p.get(val);
+int[] p1 = locs.get(0);
+int[] p2 = locs.get(1);
+if (v[p1[0]][p1[1]]) continue;
+boolean ok = false;
+if (p1[0] == p2[0]) {
+ok = true;
+for (int k = Math.min(p1[1], p2[1]) + 1; k < Math.max(p1[1], p2[1]); k++) {
+if (!v[p1[0]][k]) { ok = false; break; }}}
+else if (p1[1] == p2[1]) {
+ok = true;
+for (int k = Math.min(p1[0], p2[0]) + 1; k < Math.max(p1[0], p2[0]); k++) {
+if (!v[k][p1[1]]) { ok = false; break; }}}
+if (ok) {
+v[p1[0]][p1[1]] = v[p2[0]][p2[1]] = true;
+score += val;
+changed = true;}}}
+System.out.print(score + "\r\n");}}

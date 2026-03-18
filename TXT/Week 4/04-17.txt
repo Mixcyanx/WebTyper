@@ -1,0 +1,19 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+if (s.hasNextInt()) {
+int a = s.nextInt();
+int b = s.nextInt();
+int c = s.nextInt();
+int[] arr = {a, b, c};
+Map<Integer, Integer> m = new HashMap<>();
+for (int x : arr) m.put(x, m.getOrDefault(x, 0) + 1);
+int p = 0;
+for (int v : m.values()) if (v > p) p = v;
+List<Integer> u = new ArrayList<>(m.keySet());
+Collections.sort(u, Collections.reverseOrder());
+String out = String.valueOf(p);
+for (int x : u) out += " " + x;
+System.out.print(out + "\r\n");}}
+}

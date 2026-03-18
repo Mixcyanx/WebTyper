@@ -1,0 +1,18 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+while (s.hasNextLong()) {
+long n = s.nextLong();
+if (n == 1) {
+System.out.printf("1\r\n");
+continue;
+}
+long k = (n + 1) / 2;
+long m = k * k;
+long last = 2 * m - 1;
+long sum = 3 * last - 6;
+System.out.printf("%d\r\n", sum);
+}
+}
+}

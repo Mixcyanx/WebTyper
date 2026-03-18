@@ -1,0 +1,23 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+if (s.hasNextInt()) {
+int n = s.nextInt();
+int prevX = s.nextInt();
+int prevY = s.nextInt();
+int maxD = -1;
+int minD = Integer.MAX_VALUE;
+for (int i = 1; i < n; i++) {
+int curX = s.nextInt();
+int curY = s.nextInt();
+int d = Math.abs(curX - prevX) + Math.abs(curY - prevY);
+if (d > maxD) maxD = d;
+if (d < minD) minD = d;
+prevX = curX;
+prevY = curY;
+}
+System.out.printf("%d %d\r\n", maxD, minD);
+}
+}
+}

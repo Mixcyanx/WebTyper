@@ -1,0 +1,25 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+if (s.hasNextInt()) {
+int n = s.nextInt();
+int m = s.nextInt();
+int[][] a = new int[n][m];
+for (int i = 0; i < n; i++) {
+for (int j = 0; j < m; j++) {
+a[i][j] = s.nextInt();}}
+List<String> res = new ArrayList<>();
+for (int i = 0; i < n; i++) {
+for (int j = 0; j < m; j++) {
+int x = a[i][j];
+int sum = 0;
+for (int r = 0; r < n; r++) {
+for (int c = 0; c < m; c++) {
+if (Math.abs(i - r) + Math.abs(j - c) <= x) {
+sum += a[r][c];}}}
+if (sum % 10 == x) {
+res.add(i + " " + j);}}}
+System.out.print(res.size() + "\r\n");
+for (String p : res) {
+System.out.print(p + "\r\n");}}}}

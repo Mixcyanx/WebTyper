@@ -1,0 +1,16 @@
+﻿//2020-01-05-PA-java 
+import java.util.*;
+public class main{
+public static void main(String[]a){
+Scanner sc=new Scanner(System.in);
+while(sc.hasNextInt()){
+int F=sc.nextInt(),N=sc.nextInt(),h[]=new int[N];for(int i=0;i<N;i++)h[i]=sc.nextInt();
+List<Integer> r=new ArrayList<>();r.add(F);String res="";
+if(r.get(0)!=h[0])res=isWin(r.get(0),h[0])?"Won at round 1":"Lost at round 1";
+else for(int i=1;i<N;i++){int x=(i>=2&&h[i-1]==h[i-2])?winAgainst(h[i-1]):r.get(i-1);r.add(x);
+if(x!=h[i]){res=(isWin(x,h[i])?"Won at round ":"Lost at round ")+(i+1);break;}}
+if(res.equals(""))res="Drew at round "+N;
+for(int i=0;i<r.size();i++)System.out.print(r.get(i)+(i<r.size()-1?" ":""));
+System.out.println(" : "+res);
+}}static boolean isWin(int r,int h){return(r==0&&h==2)||(r==2&&h==5)||(r==5&&h==0);}
+static int winAgainst(int h){return h==0?5:(h==2?0:2);}}

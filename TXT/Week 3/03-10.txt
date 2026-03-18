@@ -1,0 +1,24 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+if (s.hasNextInt()) {
+int n = s.nextInt();
+int mid = (n + 1) / 2;
+for (int i = 1; i <= n; i++) {
+int spaces, stars;
+if (i <= mid) {
+spaces = mid - i;
+stars = 2 * i - 1;
+} else {
+int d = i - mid;
+spaces = d;
+stars = n - 2 * d;
+}
+for (int j = 0; j < spaces; j++) System.out.print(" ");
+for (int j = 0; j < stars; j++) System.out.print("*");
+System.out.printf("\r\n");
+}
+}
+}
+}

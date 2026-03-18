@@ -1,0 +1,23 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+int[] primes = new int[1001];
+int count = 0;
+for (int i = 2; count < 1000; i++) {
+boolean isPrime = true;
+for (int j = 2; j * j <= i; j++) {
+if (i % j == 0) {
+isPrime = false;
+break;
+}
+}
+if (isPrime) primes[++count] = i;
+}
+while (s.hasNextInt()) {
+int n = s.nextInt();
+if (n == 0) break;
+System.out.printf("%d\r\n", primes[n]);
+}
+}
+}

@@ -1,0 +1,25 @@
+import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+if (s.hasNextInt()) {
+int a = s.nextInt();
+int b = s.nextInt();
+int n = s.nextInt();
+int ans = 0;
+for (int i = 0; i < n; i++) {
+int ca = 0, cb = 0;
+while (true) {
+int x = s.nextInt();
+if (x == 0) break;
+if (x == a) ca++;
+if (x == -a) ca--;
+if (x == b) cb++;
+if (x == -b) cb--;
+}
+if (ca > 0 && cb > 0) ans++;
+}
+System.out.println(ans);
+}
+}
+}

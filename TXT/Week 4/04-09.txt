@@ -1,0 +1,15 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+if (s.hasNextInt()) {
+int t = s.nextInt();
+while (t-- > 0) {
+int r = s.nextInt();
+int[] d = new int[r];
+for (int i = 0; i < r; i++) d[i] = s.nextInt();
+Arrays.sort(d);
+int m = d[r / 2];
+int sum = 0;
+for (int x : d) sum += Math.abs(x - m);
+System.out.print(sum + "\r\n");}}}}

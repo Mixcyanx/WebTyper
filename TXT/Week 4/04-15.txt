@@ -1,0 +1,15 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+if (s.hasNextInt()) {
+int id = s.nextInt();
+boolean isPrime = true;
+if (id < 2) isPrime = false;
+else {
+for (int i = 2; i * i <= id; i++) {
+if (id % i == 0) {
+isPrime = false;
+break;}}}
+System.out.print(id + " " + (isPrime ? "yes" : "no") + "\r\n");}}
+}

@@ -1,0 +1,20 @@
+﻿import java.util.*;
+public class main{
+public static void main(String[]args){
+Scanner s=new Scanner(System.in);
+while(s.hasNextInt()){
+int n=s.nextInt(),m=s.nextInt();
+int[][]g=new int[n][m];
+for(int i=0;i<n;i++)for(int j=0;j<m;j++)g[i][j]=s.nextInt();
+for(int i=0;i<n;i++){
+StringBuilder sb=new StringBuilder();
+for(int j=0;j<m;j++){
+char ch='_';
+if(g[i][j]==1){
+boolean e=i==0||g[i-1][j]==0||i==n-1||g[i+1][j]==0||j==0||g[i][j-1]==0||j==m-1||g[i][j+1]==0;
+ch=e?'0':'_';}
+if(j>0)sb.append(' ');
+sb.append(ch);}
+System.out.print(sb.toString()+" \r\n");}
+if(s.hasNextInt())System.out.print("\r\n");}
+System.out.print("\r\n");}}

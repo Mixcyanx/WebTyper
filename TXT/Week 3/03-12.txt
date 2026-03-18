@@ -1,0 +1,21 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+while (s.hasNextInt()) {
+int n = s.nextInt();
+int sum = 0;
+int temp = n;
+while (temp > 0) {
+int d = temp % 10;
+sum += d * d * d;
+temp /= 10;
+}
+if (sum == n) {
+System.out.printf("Yes\r\n");
+} else {
+System.out.printf("No\r\n");
+}
+}
+}
+}

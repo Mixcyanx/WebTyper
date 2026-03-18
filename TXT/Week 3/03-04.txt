@@ -1,0 +1,29 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+if (s.hasNextInt()) {
+int n = s.nextInt();
+int cx = 0, cy = 0;
+int dx = 1, dy = 0;
+int left = 0, right = 0, uturn = 0;
+for (int i = 0; i < n; i++) {
+int nx = s.nextInt();
+int ny = s.nextInt();
+int vx = nx - cx;
+int vy = ny - cy;
+if (vx == 0 && vy == 0) continue;
+int ux = (vx > 0) ? 1 : (vx < 0 ? -1 : 0);
+int uy = (vy > 0) ? 1 : (vy < 0 ? -1 : 0);
+int cp = dx * uy - dy * ux;
+int dp = dx * ux + dy * uy;
+if (cp > 0) left++;
+else if (cp < 0) right++;
+else if (dp < 0) uturn++;
+dx = ux; dy = uy;
+cx = nx; cy = ny;
+}
+System.out.printf("%d %d %d\r\n", left, right, uturn);
+}
+}
+}

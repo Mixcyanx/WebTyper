@@ -1,0 +1,33 @@
+﻿import java.util.*;
+public class main {
+static class Die {
+int top = 1, front = 4, right = 2;
+void rotateForward() {
+int oldTop = top;
+top = 7 - front;
+front = oldTop;}
+void rotateRight() {
+int oldTop = top;
+top = 7 - right;
+right = oldTop;}}
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+if (s.hasNextInt()) {
+int n = s.nextInt();
+int m = s.nextInt();
+Die[] dice = new Die[n + 1];
+for (int i = 1; i <= n; i++) dice[i] = new Die();
+for (int i = 0; i < m; i++) {
+int a = s.nextInt();
+int b = s.nextInt();
+if (b == -1) {
+dice[a].rotateForward();}
+else if (b == -2) {
+dice[a].rotateRight();}
+else {
+Die temp = dice[a];
+dice[a] = dice[b];
+dice[b] = temp;}}
+for (int i = 1; i <= n; i++) {
+System.out.print(dice[i].top + " ");}
+System.out.print("\r\n");}}}

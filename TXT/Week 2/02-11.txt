@@ -1,0 +1,13 @@
+import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+if (s.hasNextInt()) {
+int lg = s.nextInt();
+int bg = lg + 3;
+int bl = (lg * 2) - 5;
+int p = (bl / 10) * 10 + (bg % 10);
+System.out.println(p);
+}
+}
+}

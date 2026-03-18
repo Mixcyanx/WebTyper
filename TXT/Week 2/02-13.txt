@@ -1,0 +1,12 @@
+import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+if (s.hasNextInt()) {
+int n = s.nextInt();
+if (n < 0) n = -n;
+while (n >= 10) n /= 10;
+System.out.println(n);
+}
+}
+}

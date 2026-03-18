@@ -1,0 +1,25 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+while (s.hasNextInt()) {
+int n = s.nextInt();
+if (n == 0) break;
+int top = 1, north = 2, west = 3, south = 5, east = 4, bottom = 6;
+for (int i = 0; i < n; i++) {
+int cmd = s.nextInt();
+int t = top, n2 = north, w = west, s2 = south, e = east, b = bottom;
+if (cmd == 1) { // north
+top = s2; north = t; south = b; bottom = n2;
+} else if (cmd == 2) { // east
+top = w; west = b; east = t; bottom = e;
+} else if (cmd == 3) { // south
+top = n2; north = b; south = t; bottom = s2;
+} else if (cmd == 4) { // west
+top = e; west = t; east = b; bottom = w;
+}
+}
+System.out.printf("%d\r\n", top);
+}
+}
+}

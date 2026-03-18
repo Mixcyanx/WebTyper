@@ -1,0 +1,29 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+int f = 1;
+while (s.hasNextInt()) {
+int n = s.nextInt();
+int m = s.nextInt();
+if (n == 0 && m == 0) break;
+if (f > 1) System.out.print("\r\n");
+char[][] g = new char[n][m];
+for (int i = 0; i < n; i++) {
+String line = s.next();
+for (int j = 0; j < m; j++) g[i][j] = line.charAt(j);}
+System.out.print("Field #" + f + ":\r\n");
+for (int i = 0; i < n; i++) {
+for (int j = 0; j < m; j++) {
+if (g[i][j] == '*') {
+System.out.print("*");}
+else {
+int c = 0;
+for (int di = -1; di <= 1; di++) {
+for (int dj = -1; dj <= 1; dj++) {
+if (di == 0 && dj == 0) continue;
+int ni = i + di, nj = j + dj;
+if (ni >= 0 && ni < n && nj >= 0 && nj < m && g[ni][nj] == '*') c++;}}
+System.out.print(c);}}
+System.out.print("\r\n");}
+f++;}}}

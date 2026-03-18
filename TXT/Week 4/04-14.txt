@@ -1,0 +1,22 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner s = new Scanner(System.in);
+if (s.hasNextInt()) {
+int n = s.nextInt();
+while (n-- > 0) {
+if (!s.hasNextInt()) break;
+int m = s.nextInt();
+int[] x = new int[m];
+int[] y = new int[m];
+for (int i = 0; i < m; i++) {
+x[i] = s.nextInt();
+y[i] = s.nextInt();}
+long maxD2 = 0;
+for (int i = 0; i < m; i++) {
+for (int j = i + 1; j < m; j++) {
+long dx = x[i] - x[j];
+long dy = y[i] - y[j];
+long d2 = dx * dx + dy * dy;
+if (d2 > maxD2) maxD2 = d2;}}
+System.out.print(maxD2 + "\r\n");}}}}

@@ -1,0 +1,10 @@
+import java.util.*;
+public class main{
+public static void main(String[]args){
+Scanner s=new Scanner(System.in);
+if(s.hasNextInt()){
+int p=s.nextInt(),r=s.nextInt(),a=s.nextInt(),st=s.nextInt(),t=s.nextInt(),m=p+2*a+2*r+2*st-2*t;
+if(m>45)System.out.println("A");
+else if(m>=35)System.out.println("B");
+else if(m>=25)System.out.println("C");
+else System.out.println("D");}}}
