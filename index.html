@@ -162,7 +162,7 @@
   // 韌體回應：OK\n 或 ERR\n
 
   const ACK_TIMEOUT = 3000; // ms，等待 ACK 的最長時間
-  const CHUNK_SIZE  = 48;   // 每次送的字元數（base64 後約 64 bytes，加上指令頭仍遠低於 MTU 244）
+  const CHUNK_SIZE  = 12;   // 每次送的字元數（base64 後 16 bytes + "DATA \n" = 22 bytes，安全低於 MTU）
 
   let device = null, rxChar = null, txChar = null;
   let busy = false;
