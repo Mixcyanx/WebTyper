@@ -16,8 +16,7 @@ System.out.print("Field #" + f + ":\r\n");
 for (int i = 0; i < n; i++) {
 for (int j = 0; j < m; j++) {
 if (g[i][j] == '*') {
-System.out.print("*");}
-else {
+System.out.print("*");}else {
 int c = 0;
 for (int di = -1; di <= 1; di++) {
 for (int dj = -1; dj <= 1; dj++) {
@@ -25,5 +24,4 @@ if (di == 0 && dj == 0) continue;
 int ni = i + di, nj = j + dj;
 if (ni >= 0 && ni < n && nj >= 0 && nj < m && g[ni][nj] == '*') c++;}}
 System.out.print(c);}}
-System.out.print("\r\n");}
-f++;}}}
+System.out.print("\r\n");}f++;}}}

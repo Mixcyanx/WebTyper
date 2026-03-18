@@ -11,5 +11,4 @@ for (int i = 2; i * i <= id; i++) {
 if (id % i == 0) {
 isPrime = false;
 break;}}}
-System.out.print(id + " " + (isPrime ? "yes" : "no") + "\r\n");}}
-}
+System.out.print(id + " " + (isPrime ? "yes" : "no") + "\r\n");}}}

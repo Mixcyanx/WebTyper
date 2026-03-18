@@ -8,10 +8,5 @@ int max = 0;
 for (int i = 0; i < n; i++) {
 if (s.hasNextInt()) {
 int val = s.nextInt();
-if (val > max) max = val;
-}
-}
-System.out.printf("%d\r\n", max);
-}
-}
-}
+if (val > max) max = val;}}
+System.out.printf("%d\r\n", max);}}}

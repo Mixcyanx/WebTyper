@@ -9,13 +9,11 @@ for (int i = 0; i < 9; i++) {
 String r = "";
 for (int j = 0; j < 9; j++) {
 if (g[i][j] == '1') {
-r += "9";
-} else {
+r += "9";} else {
 int c = 0;
 for (int di = -1; di <= 1; di++) {
 for (int dj = -1; dj <= 1; dj++) {
 int ni = i + di, nj = j + dj;
 if (ni >= 0 && ni < 9 && nj >= 0 && nj < 9 && g[ni][nj] == '1') c++;}}
 r += String.valueOf(c);}}
-System.out.print(r + "\r\n");}}
-}
+System.out.print(r + "\r\n");}}}

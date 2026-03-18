@@ -15,11 +15,6 @@ if (x == 0) break;
 if (x == a) ca++;
 if (x == -a) ca--;
 if (x == b) cb++;
-if (x == -b) cb--;
-}
-if (ca > 0 && cb > 0) ans++;
-}
-System.out.println(ans);
-}
-}
-}
+if (x == -b) cb--;}
+if (ca > 0 && cb > 0) ans++;}
+System.out.println(ans);}}}

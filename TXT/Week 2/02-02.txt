@@ -7,8 +7,6 @@ for (int i = 1; i <= t; i++) {
 int n = s.nextInt();
 int h = 0, l = 0, p = s.nextInt();
 for (int j = 1; j < n; j++) {
-int k = s.nextInt();
-if (k > p) h++;
-else if (k < p) l++;
-p = k;}
+int k = s.nextInt();if (k > p) h++;
+else if (k < p) l++;p = k;}
 System.out.println("Case " + i + ": " + h + " " + l);}}}

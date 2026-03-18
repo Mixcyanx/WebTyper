@@ -7,7 +7,4 @@ int lg = s.nextInt();
 int bg = lg + 3;
 int bl = (lg * 2) - 5;
 int p = (bl / 10) * 10 + (bg % 10);
-System.out.println(p);
-}
-}
-}
+System.out.println(p);}}}

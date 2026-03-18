@@ -9,16 +9,8 @@ String[] chars = {"A", "B", "C", "D", "E", "F"};
 for (int i = 0; i < n; i++) {
 String current = "";
 for (int j = 0; j < 4; j++) {
-current += s.next();
-}
+current += s.next();}
 for (int k = 0; k < 6; k++) {
 if (current.equals(codes[k])) {
-System.out.print(chars[k]);
-break;
-}
-}
-}
-System.out.println();
-}
-}
-}
+System.out.print(chars[k]);break;}}}
+System.out.println();}}}

@@ -24,8 +24,4 @@ System.out.printf("C\r\n");
 break;
 case 0:
 System.out.printf("F\r\n");
-break;
-}
-}
-}
-}
+break;}}}}

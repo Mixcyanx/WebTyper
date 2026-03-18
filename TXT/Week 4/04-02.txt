@@ -7,27 +7,17 @@ int n = s.nextInt();
 int d = s.nextInt();
 int[] a = new int[n];
 for (int i = 0; i < n; i++) a[i] = s.nextInt();
-
 int totalProfit = 0;
 int buyPrice = a[0];
 int lastSellPrice = 0;
 boolean holding = true;
-
 for (int i = 1; i < n; i++) {
 if (holding) {
 if (a[i] >= buyPrice + d) {
 totalProfit += (a[i] - buyPrice);
 lastSellPrice = a[i];
-holding = false;
-}
-} else {
+holding = false;}} else {
 if (a[i] <= lastSellPrice - d) {
 buyPrice = a[i];
-holding = true;
-}
-}
-}
-System.out.printf("%d\r\n", totalProfit);
-}
-}
-}
+holding = true;}}}
+System.out.printf("%d\r\n", totalProfit);}}}

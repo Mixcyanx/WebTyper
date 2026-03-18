@@ -9,11 +9,4 @@ for (int n20 = 0; n50 * 50 + n20 * 20 <= total; n20++) {
 for (int n10 = 0; n50 * 50 + n20 * 20 + n10 * 10 <= total; n10++) {
 for (int n5 = 0; n50 * 50 + n20 * 20 + n10 * 10 + n5 * 5 <= total; n5++) {
 int n1 = total - (n50 * 50 + n20 * 20 + n10 * 10 + n5 * 5);
-System.out.printf("NT50:%d, NT20:%d, NT10:%d, NT5:%d, NT1:%d.\r\n", n50, n20, n10, n5, n1);
-}
-}
-}
-}
-}
-}
-}
+System.out.printf("NT50:%d, NT20:%d, NT10:%d, NT5:%d, NT1:%d.\r\n", n50, n20, n10, n5, n1);}}}}}}}

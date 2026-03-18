@@ -1,5 +1,4 @@
-﻿//2020-01-05-PA-java 
-import java.util.*;
+﻿import java.util.*;
 public class main{
 public static void main(String[]a){
 Scanner sc=new Scanner(System.in);

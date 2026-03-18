@@ -16,10 +16,5 @@ top = w; west = b; east = t; bottom = e;
 } else if (cmd == 3) { // south
 top = n2; north = b; south = t; bottom = s2;
 } else if (cmd == 4) { // west
-top = e; west = t; east = b; bottom = w;
-}
-}
-System.out.printf("%d\r\n", top);
-}
-}
-}
+top = e; west = t; east = b; bottom = w;}}
+System.out.printf("%d\r\n", top);}}}

@@ -15,9 +15,5 @@ int d = Math.abs(curX - prevX) + Math.abs(curY - prevY);
 if (d > maxD) maxD = d;
 if (d < minD) minD = d;
 prevX = curX;
-prevY = curY;
-}
-System.out.printf("%d %d\r\n", maxD, minD);
-}
-}
-}
+prevY = curY;}
+System.out.printf("%d %d\r\n", maxD, minD);}}}

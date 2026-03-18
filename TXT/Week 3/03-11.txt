@@ -11,10 +11,5 @@ System.out.print("*");
 if (dist < n - 1) {
 int inner = 2 * (n - dist) - 3;
 for (int j = 0; j < inner; j++) System.out.print(" ");
-System.out.print("*");
-}
-System.out.printf("\r\n");
-}
-}
-}
-}
+System.out.print("*");}
+System.out.printf("\r\n");}}}}

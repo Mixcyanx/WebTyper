@@ -7,10 +7,7 @@ int n = s.nextInt();
 if (isHappy(n)) {
 System.out.printf("%d is a Happy number\r\n", n);
 } else {
-System.out.printf("%d is an Unhappy number\r\n", n);
-}
-}
-}
+System.out.printf("%d is an Unhappy number\r\n", n);}}}
 public static boolean isHappy(int n) {
 Set<Integer> seen = new HashSet<>();
 while (n != 1 && !seen.contains(n)) {
@@ -19,10 +16,6 @@ int sum = 0;
 while (n > 0) {
 int d = n % 10;
 sum += d * d;
-n /= 10;
-}
-n = sum;
-}
-return n == 1;
-}
-}
+n /= 10;}
+n = sum;}
+return n == 1;}}

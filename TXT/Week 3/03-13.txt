@@ -6,13 +6,9 @@ while (s.hasNextLong()) {
 long n = s.nextLong();
 if (n == 1) {
 System.out.printf("1\r\n");
-continue;
-}
+continue;}
 long k = (n + 1) / 2;
 long m = k * k;
 long last = 2 * m - 1;
 long sum = 3 * last - 6;
-System.out.printf("%d\r\n", sum);
-}
-}
-}
+System.out.printf("%d\r\n", sum);}}}
