@@ -184,7 +184,7 @@
 
   const ACK_TIMEOUT = 5000;
   const CHUNK_SIZE  = 6;   // 字元數 → base64 8B + "DATA \n" = 14B
-  const SEG_SIZE    = 48;  // 每段字元數，打完再送下一段
+  const SEG_SIZE    = 200; // 每段字元數，夠大讓 pipeline 有效
 
   let device = null, rxChar = null, txChar = null;
   let busy = false, stopFlag = false;
@@ -260,7 +260,7 @@
     log('連線成功');
   }
 
-  // ── 傳送一段 ──
+  // ── 傳送一段（pipeline：送完 END 不等 DONE，立刻送下一段）──
   async function sendSegment(seg, cps, switchIme, imeCmd) {
     if (!await sendAndAck(`BEGIN ${cps} ${switchIme} ${imeCmd}`)) throw new Error('BEGIN 未收到 ACK');
     for (let i = 0; i < seg.length; i += CHUNK_SIZE) {
@@ -269,7 +269,7 @@
       if (!await sendAndAck(`DATA ${encoded}`)) throw new Error('DATA 未收到 ACK');
     }
     if (!await sendAndAck('END')) throw new Error('END 未收到 ACK');
-    await waitDone();
+    // 不等 DONE，韌體邊打字邊接收下一段
     return true;
   }
 
@@ -289,12 +289,12 @@
       if (stopFlag) break;
       const seg = text.slice(i, i + SEG_SIZE);
       setStatus(`傳送中 ${sent}/${total}`);
-      // 只有第一段才切換輸入法
       const segIme = (i === 0) ? switchIme : '0';
       await sendSegment(seg, cps, segIme, imeCmd);
       sent += seg.length;
-      log(`段落完成 ${sent}/${total}`);
     }
+    // 最後一段送完後等 DONE
+    await waitDone();
     log(`全部完成，共 ${total} 字`); setStatus('完成'); busy = false;
   }
 
