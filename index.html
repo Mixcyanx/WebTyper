@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>nRF52840 BLE 打字傳輸器</title>
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Mixcyanx/WebTyper/main/WebTyper.png" />
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Mixcyanx/WebTyper/main/WebTyper.png" />
   <style>
     :root { --line: #334155; --text: #e5e7eb; --muted: #94a3b8; --danger: #ef4444; }
     * { box-sizing: border-box; }
@@ -91,8 +93,13 @@
 
   <!-- 標題 -->
   <div class="card">
-    <h1>nRF52840 BLE 打字傳輸器</h1>
-    <div class="ver">v2.1.0 — 分段 ACK 握手 + GitHub TXT 庫</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+      <img src="https://raw.githubusercontent.com/Mixcyanx/WebTyper/main/WebTyper.png" style="width:48px;height:48px;border-radius:10px;" />
+      <div>
+        <h1>nRF52840 BLE 打字傳輸器</h1>
+        <div class="ver">v2.1.0 — 分段 ACK 握手 + GitHub TXT 庫</div>
+      </div>
+    </div>
     <div class="sub">Android Chrome 透過 Web Bluetooth 連線到 nRF52840，將文字經由 BLE 傳給開發板，再由開發板用 USB HID Keyboard 打字到電腦。ios裝置得下載支援BLE的瀏覽器，如:Bluefy。</div>
     <div class="status" id="status">尚未連線</div>
   </div>
