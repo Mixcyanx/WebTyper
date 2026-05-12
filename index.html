@@ -43,6 +43,7 @@
     }
     button.good { background: #16a34a; }
     button.warn { background: #ea580c; }
+    button.purple { background: #7c3aed; }
     button.danger { background: var(--danger); }
     button.secondary { background: #0ea5e9; }
     button.sm { padding: 8px 12px; font-size: 13px; }
@@ -175,6 +176,7 @@
     <div class="row" style="margin-top:12px;">
       <button id="btnSend" class="good">傳送到開發板</button>
       <button id="btnStop" class="warn">停止打字</button>
+      <button id="btnPaste" class="purple">貼上文字</button>
       <button id="btnClear">清空文字</button>
     </div>
   </div>
@@ -452,6 +454,16 @@
   document.getElementById('btnStop').addEventListener('click', async () => {
     stopFlag = true; stopTypingSync();
     try { await sendLine('STOP'); logBox.textContent = '已停止'; } catch (e) { logBox.textContent = 'STOP 失敗：' + e.message; }
+  });
+  document.getElementById('btnPaste').addEventListener('click', async () => {
+    try {
+      if (!navigator.clipboard?.readText) throw new Error('瀏覽器不支援剪貼簿讀取');
+      const text = await navigator.clipboard.readText();
+      textInput.value = text;
+      logBox.textContent = `已貼上文字（${text.length} 字元）`;
+    } catch (e) {
+      logBox.textContent = '貼上失敗：' + e.message;
+    }
   });
   document.getElementById('btnClear').addEventListener('click', () => { textInput.value = ''; logBox.textContent = '已清空'; });
 
