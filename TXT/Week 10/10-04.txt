@@ -1,0 +1,27 @@
+﻿import java.util.*;
+class MyPoint {
+private double x;
+private double y;
+public MyPoint() {
+this.x = 0;
+this.y = 0;}
+public MyPoint(double x, double y) {
+this.x = x;
+this.y = y;}
+public double getX() {
+return this.x;}
+public double getY() {
+return this.y;}
+public double distance(MyPoint p) {
+return Math.sqrt(Math.pow(this.x - p.getX(), 2) + Math.pow(this.y - p.getY(), 2));}
+public static double distance(MyPoint p1, MyPoint p2) {
+return Math.sqrt(Math.pow(p1.getX() - p2.getX(), 2) + Math.pow(p1.getY() - p2.getY(), 2));}}
+public class main {
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+int a = in.nextInt();
+double b = in.nextDouble();
+MyPoint p1 = new MyPoint();
+MyPoint p2 = new MyPoint(a, b);
+System.out.println(p1.distance(p2));
+System.out.println(MyPoint.distance(p1, p2));}}

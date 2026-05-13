@@ -1,0 +1,17 @@
+﻿import java.util.*;
+import java.math.*;
+public class main {
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+int x = in.nextInt();
+int count = 0;
+BigInteger bigNum = new BigInteger("10000000000000000000000000000000000000000000000000");
+BigInteger three = new BigInteger("3");
+BigInteger seven = new BigInteger("7");
+BigInteger zero = BigInteger.ZERO;
+BigInteger one = BigInteger.ONE;
+while (count < x) {
+if (bigNum.remainder(three).equals(zero) || bigNum.remainder(seven).equals(zero)) {
+System.out.println(bigNum.toString());
+count++;}
+bigNum = bigNum.add(one);}}}

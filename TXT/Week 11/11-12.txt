@@ -1,0 +1,19 @@
+﻿import java.util.*;
+class Animal{
+public void run(int a){
+System.out.println("Animal's running speed is "+a);
+}}
+class Dog extends Animal{
+public void run(int a){
+System.out.println("Dog's running speed is "+a);
+}}
+public class main {
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+int a = in.nextInt();
+int b = in.nextInt();
+Animal animal = new Animal();
+animal.run(a);
+animal = new Dog();
+animal.run(b);
+}}

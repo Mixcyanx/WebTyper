@@ -1,0 +1,26 @@
+﻿import java.util.*;
+class Computer {
+private String company;
+private int year;
+public Computer() {
+this.company = "Taiwan";
+this.year = 2021;}
+public String getCompany() {
+return this.company;}
+public void setCompany(String company) {
+this.company = company;}
+public int getYear() {
+return this.year;}
+public void setYear(int year) {
+this.year = year;}}
+public class main {
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+Computer com = new Computer();
+System.out.println("Computer's company is "+com.getCompany()+", "+ com.getYear());
+System.out.println("Changing compuer's information");
+String c = in.nextLine();
+int y = in.nextInt();
+com.setCompany(c);
+com.setYear(y);
+System.out.println("Computer's new company is "+com.getCompany()+", "+ com.getYear());}}

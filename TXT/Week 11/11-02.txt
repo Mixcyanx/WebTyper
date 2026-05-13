@@ -1,0 +1,98 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Person p;
+p = new Student1();
+System.out.print(p.toString()+"\r\n");
+p = new Employee();
+System.out.print(p.toString()+"\r\n");
+p = new Faculty();
+System.out.print(p.toString()+"\r\n");
+p = new Staff();
+System.out.print(p.toString()+"\r\n");
+p = new Staff("College");
+System.out.print(p.toString()+"\r\n");
+}
+}
+class Person {
+protected String name;
+protected String address;
+protected String phone;
+protected String email;
+public Person() {
+name="";
+address="";
+phone="";
+email="";
+}
+public String toString() {
+return name;
+}
+}
+class Student1 extends Person {
+public Student1() {
+name="Student";
+}
+public String toString() {
+return name;
+}
+}
+class Employee extends Person {
+protected String office;
+protected double salary;
+protected MyDate dateHired;
+public Employee() {
+name="Employee";
+}
+public String toString() {
+return name;
+}
+}
+class Faculty extends Employee {
+protected String officeHours;
+protected String rank;
+public Faculty() {
+name="Faculty";
+}
+public String toString() {
+return name;
+}
+}
+class Staff extends Employee {
+protected String title;
+public Staff() {
+title="Department";
+name="Staff's office is "+title;
+}
+public Staff(String title) {
+this.title=title;
+name="Staff's office is "+title;
+}
+public String toString() {
+return name;
+}
+}
+class MyDate {
+private int year;
+private int month;
+private int day;
+public MyDate() {
+year=2024;
+month=1;
+day=1;
+}
+public MyDate(int year,int month,int day) {
+this.year=year;
+this.month=month;
+this.day=day;
+}
+public int getYear() {
+return year;
+}
+public int getMonth() {
+return month;
+}
+public int getDay() {
+return day;
+}
+}

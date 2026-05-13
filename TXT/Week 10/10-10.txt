@@ -1,0 +1,14 @@
+﻿import java.util.*;
+class Computer {
+String company;
+int year;}
+
+public class main {
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+Computer com = new Computer();
+com.company = in.nextLine();
+com.year = in.nextInt();
+System.out.println("Computer's company is "+com.company+", "+ com.year);
+}
+}

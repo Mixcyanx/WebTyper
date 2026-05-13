@@ -1,0 +1,27 @@
+﻿import java.util.Scanner;
+class main {
+public static void main(String[] args) {
+Scanner input = new Scanner(System.in);
+System.out.print("Enter yearly interest rate, for example 8.25: ");
+double annualInterestRate = input.nextDouble();
+System.out.print("Enter number of years as an integer: ");
+int numberOfYears = input.nextInt();
+System.out.print("Enter loan amount, for example 120000.95: ");
+double loanAmount = input.nextDouble();
+Loan loan = new Loan(annualInterestRate, numberOfYears, loanAmount);
+double monthlyPayment = (int)(loan.getMonthlyPayment() * 100) / 100.0;
+double totalPayment = (int)(loan.getTotalPayment() * 100) / 100.0;
+System.out.println("The monthly payment is " + monthlyPayment + "\nThe total payment is " + totalPayment);}}
+class Loan {
+private double annualInterestRate;
+private int numberOfYears;
+private double loanAmount;
+public Loan(double annualInterestRate, int numberOfYears, double loanAmount) {
+this.annualInterestRate = annualInterestRate;
+this.numberOfYears = numberOfYears;
+this.loanAmount = loanAmount;}
+public double getMonthlyPayment() {
+double monthlyInterestRate = annualInterestRate / 1200;
+return loanAmount * monthlyInterestRate / (1 - (Math.pow(1 / (1 + monthlyInterestRate), numberOfYears * 12)));}
+public double getTotalPayment() {
+return getMonthlyPayment() * numberOfYears * 12;}}

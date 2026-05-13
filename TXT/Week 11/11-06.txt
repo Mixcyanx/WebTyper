@@ -1,0 +1,32 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+int d=in.nextInt();
+Father john=new Father(d);
+System.out.println("Father has "+john.getMoney()+" dollars.");
+int a=in.nextInt();
+Son mark=new Son(d,a);
+System.out.println("Son has Father's "+mark.getMoney()+" dollars.");
+mark.getBonus();
+}
+}
+class Father {
+protected int money;
+public Father(int money) {
+this.money=money;
+}
+public int getMoney() {
+return money;
+}
+}
+class Son extends Father {
+private int bonus;
+public Son(int money,int bonus) {
+super(money);
+this.bonus=bonus;
+}
+public void getBonus() {
+System.out.println("Son has bonus: "+bonus+" dollars");
+}
+}

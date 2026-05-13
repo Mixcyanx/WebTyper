@@ -1,0 +1,29 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+processLines(in); }
+public static void processLines(Scanner in){
+if(!in.hasNextLine()){
+return; }
+String s=in.nextLine().toLowerCase();
+String k="`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./";
+decode(s, 0, k);
+System.out.print("\r\n");
+processLines(in); }
+public static void decode(String s, int i, String k){
+if(i<s.length()){
+char c=s.charAt(i);
+if(c==' '){
+System.out.print(" "); }
+else {
+int pos=findPos(k, c, 0);
+if(pos>=2){
+System.out.print(k.charAt(pos-2)); }}
+decode(s, i+1, k); }}
+public static int findPos(String k, char c, int i){
+if(i>=k.length()){
+return -1; }
+if(k.charAt(i)==c){
+return i; }
+return findPos(k, c, i+1); }}

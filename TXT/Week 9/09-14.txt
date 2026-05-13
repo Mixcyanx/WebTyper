@@ -1,0 +1,23 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+List<String> lines = new ArrayList<>();
+int maxLen = 0;
+while (in.hasNextLine()) {
+String s = in.nextLine();
+lines.add(s);
+if (s.length() > maxLen) maxLen = s.length();}
+for (int j = 0; j < maxLen; j++) {
+for (int i = lines.size() - 1; i >= 0; i--) {
+String row = lines.get(i);
+if (j < row.length()) {
+System.out.print(row.charAt(j));
+} else {
+boolean hasMore = false;
+for (int k = i - 1; k >= 0; k--) {
+if (j < lines.get(k).length()) {
+hasMore = true;
+break;}}
+if (hasMore) System.out.print(" ");}}
+System.out.println();}}}

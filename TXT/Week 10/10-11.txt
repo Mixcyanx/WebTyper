@@ -1,0 +1,19 @@
+﻿import java.util.*;
+class Computer {
+String company;
+int year;
+public Computer() {
+this.company = "Taiwan";
+this.year = 2021;}
+public Computer(String company, int year) {
+this.company = company;
+this.year = year;}}
+public class main {
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+String c = in.nextLine();
+int y = in.nextInt();
+Computer com = new Computer();
+Computer com2 = new Computer(c, y);
+System.out.println("#1: Computer's company is "+com.company+", "+ com.year);
+System.out.println("#2: Computer's company is "+com2.company+", "+ com2.year);}}

@@ -1,0 +1,35 @@
+﻿import java.util.*;
+public class main{
+public static void main(String args[]){
+Book b1 = new Book();
+Scanner in = new Scanner(System.in);	
+b1.setData("BO9212", "Java SE6 programming", 550); 
+System.out.println(b1.getBookNo());
+System.out.println(b1.getTitle());
+System.out.println(b1.getPrice());
+String bn = in.next();
+String title = in.next();
+int price = in.nextInt();
+Book b2 = new Book(bn, title, price);
+System.out.println(b2.getBookNo());
+System.out.println(b2.getTitle());
+System.out.println(b2.getPrice());}} 
+class Book {
+private String bookNo;
+private String title;
+private int price;
+public Book() {}
+public Book(String bookNo,String title,int price) {
+this.bookNo=bookNo;
+this.title=title;
+this.price=price;}
+public void setData(String bookNo,String title,int price) {
+this.bookNo=bookNo;
+this.title=title;
+this.price=price;}
+public String getBookNo() {
+return bookNo;}
+public String getTitle() {
+return title;}
+public int getPrice() {
+return price;}}

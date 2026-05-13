@@ -1,0 +1,22 @@
+﻿import java.util.Scanner;
+
+public class main {
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+int a = in.nextInt();
+Animal dog = new Dog();
+dog.run(a);
+}}
+class Dog extends Animal {
+public void run(int units){
+System.out.println("Dog's running speed is " + units);
+}
+public void run(){
+System.out.println("Dog's default running speed is 20");
+}}
+
+class Animal{
+public void run(int units){
+}
+public void run(){
+}}

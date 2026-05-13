@@ -1,0 +1,36 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+solve(in); }
+public static void solve(Scanner in){
+if(!in.hasNextLine()){
+return; }
+String n1=in.nextLine();
+if(!in.hasNextLine()){
+return; }
+String n2=in.nextLine();
+int v1=getVal(n1, 0, 0);
+int v2=getVal(n2, 0, 0);
+double d1=reduce(v1);
+double d2=reduce(v2);
+double res=(d1>d2)?(d2/d1)*100:(d1/d2)*100;
+System.out.print(String.format("%.2f %%", res)+"\r\n");
+solve(in); }
+public static int getVal(String s, int i, int sum){
+if(i>=s.length()){
+return sum; }
+char c=s.charAt(i);
+if(Character.isUpperCase(c)){
+sum+=(c-'A'+1); }
+else if(Character.isLowerCase(c)){
+sum+=(c-'a'+1); }
+return getVal(s, i+1, sum); }
+public static int reduce(int n){
+if(n<10){
+return n; }
+return reduce(sumDigits(n, 0)); }
+public static int sumDigits(int n, int s){
+if(n==0){
+return s; }
+return sumDigits(n/10, s+(n%10)); }}

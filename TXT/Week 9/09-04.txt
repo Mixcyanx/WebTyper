@@ -1,0 +1,37 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+ArrayList<Double> a=new ArrayList<>();
+while(in.hasNext()){
+try {
+a.add(Double.parseDouble(in.next()));
+} catch (Exception e) { break; }}
+if(a.size()>0){
+int n=a.size();
+ArrayList<Double> s=new ArrayList<>(a);
+Collections.sort(s);
+double p1=(n+1)*0.25;
+double p3=(n+1)*0.75;
+double q1, q3;
+if(p1<1) q1=s.get(0);
+else if(p1>=n) q1=s.get(n-1);
+else {
+int i=(int)p1;
+q1=s.get(i-1)+(p1-i)*(s.get(i)-s.get(i-1)); }
+if(p3<1) q3=s.get(0);
+else if(p3>=n) q3=s.get(n-1);
+else {
+int i=(int)p3;
+q3=s.get(i-1)+(p3-i)*(s.get(i)-s.get(i-1)); }
+double fs=q3-q1;
+double l=q1-1.5*fs;
+double u=q3+1.5*fs;
+boolean has=false;
+for(int i=0;i<a.size();i++){
+double v=a.get(i);
+if(v<l||v>u){
+System.out.print("The outlier is "+v+"\r\n");
+has=true; }}
+if(!has){
+System.out.print("There is no outlier.\r\n"); }}}}

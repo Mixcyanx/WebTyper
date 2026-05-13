@@ -1,0 +1,54 @@
+﻿import java.util.*;
+
+class Dept {
+public static char getDeptNo(String s) {
+return s.charAt(3);
+}
+
+public static String getDept(char d) {
+if (d == '1') {
+return "Software Engineering and Digital Innovation Applications";
+}
+if (d == '2') {
+return "Computer Science and Information Engineering";
+}
+if (d == '3') {
+return "Tax";
+}
+if (d == '4') {
+return "World Trade";
+}
+if (d == '5') {
+return "?Business Administanement";}
+if (d == '6') {
+return "Inforamtion Management";}
+if (d == '7') {
+return "English Language";}
+return "";}}
+public class main {
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+String s = "9951001";
+char d = Dept.getDeptNo(s);
+System.out.println(Dept.getDept(d));
+s = "9952001";
+d = Dept.getDeptNo(s);
+System.out.println(Dept.getDept(d));
+s = "9953001";
+d = Dept.getDeptNo(s);
+System.out.println(Dept.getDept(d));
+s = "9954001";
+d = Dept.getDeptNo(s);
+System.out.println(Dept.getDept(d));
+s = "9955001";
+d = Dept.getDeptNo(s);
+System.out.println(Dept.getDept(d));
+s = "9956001";
+d = Dept.getDeptNo(s);
+System.out.println(Dept.getDept(d));
+s = "9957001";
+d = Dept.getDeptNo(s);
+System.out.println(Dept.getDept(d));
+s = in.next();
+d = Dept.getDeptNo(s);
+System.out.println(Dept.getDept(d));}}

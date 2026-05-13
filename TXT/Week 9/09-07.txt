@@ -1,0 +1,36 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+solve(in, 0); }
+public static void solve(Scanner in, int count) {
+if(!in.hasNextLine()){
+return; }
+if(count>0){
+System.out.print("\r\n"); }
+String s=in.nextLine();
+int[] freq=new int[256];
+countFreq(s, 0, freq);
+List<int[]> res=new ArrayList<>();
+collect(freq, 0, res);
+Collections.sort(res, new Comparator<int[]>() {
+public int compare(int[] a, int[] b) {
+if(a[1]!=b[1]){
+return a[1]-b[1]; }
+return b[0]-a[0]; }});
+printRes(res, 0);
+solve(in, count+1); }
+public static void countFreq(String s, int i, int[] freq) {
+if(i<s.length()){
+freq[(int)s.charAt(i)]++;
+countFreq(s, i+1, freq); }}
+public static void collect(int[] freq, int i, List<int[]> res) {
+if(i<256){
+if(freq[i]>0){
+res.add(new int[]{i, freq[i]}); }
+collect(freq, i+1, res); }}
+public static void printRes(List<int[]> res, int i) {
+if(i<res.size()){
+int[] pair=res.get(i);
+System.out.print(pair[0]+" "+pair[1]+"\r\n");
+printRes(res, i+1); }}}

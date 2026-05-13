@@ -1,0 +1,64 @@
+﻿import java.util.*;
+public class main {
+private static ShapeTriangle st;
+private static ShapeRectangle sr;
+private static ShapeCircle sc;
+private static Shape shape;
+public static void main(String[] args) {
+Scanner kb=new Scanner(System.in);
+int n=kb.nextInt();
+int a,b,c,d,e,f;
+for(int i=1;i<=n;i++) {
+a=kb.nextInt();
+b=kb.nextInt();
+c=kb.nextInt();
+d=kb.nextInt();
+e=kb.nextInt();
+f=kb.nextInt();
+System.out.print("Case "+i+":\r\n");
+doTest(a,b,c,d,e,f);
+//if(i<n) System.out.print("\r\n");
+}
+}
+public static void doTest(int a,int b,int c,int d,int e,int f) {
+st=new ShapeTriangle(a,b,c);
+sr=new ShapeRectangle(d,e);
+sc=new ShapeCircle(f);
+System.out.print("Using Object call: \n");
+System.out.print(st.getType()+"Perimeter: "+st.perimeter()+"\r\n");
+System.out.print(sr.getType()+"Perimeter: "+sr.perimeter()+"\r\n");
+System.out.print(sc.getType()+"Perimeter: "+sc.perimeter()+"\r\n");
+System.out.print("\r\n");
+System.out.print("Using Polymorphism: \r\n");
+shape=st;
+System.out.print(shape.getType()+"Perimeter= "+shape.perimeter()+"\r\n");
+shape=sr;
+System.out.print(shape.getType()+"Perimeter= "+shape.perimeter()+"\r\n");
+shape=sc;
+System.out.print(shape.getType()+"Perimeter= "+shape.perimeter()+"\r\n");
+System.out.print("\r\n");
+}
+}
+abstract class Shape {
+public abstract double perimeter();
+public abstract String getType();
+}
+class ShapeTriangle extends Shape {
+private int a,b,c;
+public ShapeTriangle(int a,int b,int c) { this.a=a; this.b=b; this.c=c; }
+public void setSides(int a,int b,int c) { this.a=a; this.b=b; this.c=c; }
+public double perimeter() { return a+b+c; }
+public String getType() { return "Triangle"; }
+}
+class ShapeRectangle extends Shape {
+private int length,width;
+public ShapeRectangle(int length,int width) { this.length=length; this.width=width; }
+public double perimeter() { return 2*(length+width); }
+public String getType() { return "Rectangle"; }
+}
+class ShapeCircle extends Shape {
+private int radius;
+public ShapeCircle(int radius) { this.radius=radius; }
+public double perimeter() { return 2*Math.PI*radius; }
+public String getType() { return "Circle"; }
+}

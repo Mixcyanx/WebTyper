@@ -1,0 +1,23 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+if(in.hasNext()){
+int n=Integer.parseInt(in.next());
+runTest(in, 1, n); }
+}
+public static void runTest(Scanner in, int p, int total){
+if(p<=total){
+String s1=in.next();
+String s2=in.next();
+int v1=Integer.parseInt(s1, 2);
+int v2=Integer.parseInt(s2, 2);
+if(gcd(v1, v2)>1){
+System.out.print("Pair #"+p+": All you need is love!\r\n"); }
+else {
+System.out.print("Pair #"+p+": Love is not all you need!\r\n"); }
+runTest(in, p+1, total); }}
+public static int gcd(int a, int b){
+if(b==0){
+return a; }
+return gcd(b, a%b); }}

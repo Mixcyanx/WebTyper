@@ -1,0 +1,24 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+String s=in.next();
+int len =s.length();
+if(len>3){
+System.out.print(s+"\r\n");
+System.out.print(s.substring(1)+"\r\n");
+System.out.print(s.substring(2)+"\r\n");
+System.out.print(s.substring(2,len-1)+"\r\n");
+System.out.println(s.substring(2,len-2));}
+else if(len==3){
+System.out.print(s+"\r\n");
+System.out.print(s.substring(1)+"\r\n");
+System.out.print(s.substring(2)+"\r\n");
+System.out.print("\r\n");
+System.out.println();}
+else if(len==2){
+System.out.print(s+"\r\n");
+System.out.print(s.substring(1)+"\r\n");
+System.out.print(s.substring(2)+"\r\n");
+System.out.print(s.substring(1,len-1)+"\r\n");
+System.out.println(s.substring(1,len-1));}}}

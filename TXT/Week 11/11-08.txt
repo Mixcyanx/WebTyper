@@ -1,0 +1,27 @@
+﻿import java.util.*;
+class Car{
+void drive(){
+System.out.println("Automatic Transmission");
+}}
+class Taxi extends Car{
+}
+class Bus{
+void drive(){
+System.out.println("Bus is Manual Transmission");
+}
+void drive(String s){
+if(s.equals("Automatic")){
+System.out.println("Automatic Transmission");
+}else{
+System.out.println("Bus is "+s+" Transmission");
+}}}
+public class main {
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+String d = in.next();
+Taxi taxi = new Taxi();
+taxi.drive();
+Bus bus = new Bus();
+bus.drive();
+bus.drive(d);
+}}

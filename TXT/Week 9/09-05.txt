@@ -1,0 +1,16 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+if(in.hasNext()){
+String s=in.next();
+if(check(s,0,s.length()-1)){
+System.out.print(s+" is Palindrome.\r\n"); }
+else {
+System.out.print(s+" is not Palindrome.\r\n"); }}}
+public static boolean check(String s,int L,int R){
+if(L>=R){
+return true; }
+if(s.charAt(L)!=s.charAt(R)){
+return false; }
+return check(s,L+1,R-1); }}

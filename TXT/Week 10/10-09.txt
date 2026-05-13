@@ -1,0 +1,9 @@
+﻿class Computer {
+public Computer() {
+System.out.println("This is Computer's constructor");
+System.out.println("A new computer is constructed");}
+}
+public class main {
+public static void main(final String[] args) {
+System.out.println("A computer constructing...");
+Computer asus = new Computer();}}

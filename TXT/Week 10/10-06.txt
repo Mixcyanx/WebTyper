@@ -1,0 +1,37 @@
+﻿import java.util.Scanner;
+public class main {
+public static void main(String[] args) {
+BMI bmi1 = new BMI("John Doe", 18, 145, 70);
+System.out.println("The BMI for " + bmi1.getName() + " is " + bmi1.getBMI() + " " + bmi1.getStatus());
+Scanner in = new Scanner(System.in);
+int weight = in.nextInt();
+int height = in.nextInt();
+BMI bmi2 = new BMI("Peter King", weight, height);
+System.out.println("The BMI for " + bmi2.getName() + " is " + bmi2.getBMI() + " " + bmi2.getStatus());}}
+class BMI {
+private String name;
+private int age;
+private double weight;
+private double height;
+public final double KILOGRAMS_PER_POUND = 0.45359237;
+public final double METERS_PER_INCH = 0.0254;
+public BMI(String name, int age, double weight, double height) {
+this.name = name;
+this.age = age;
+this.weight = weight;
+this.height = height;}
+public BMI(String name, double weight, double height) {
+this(name, 20, weight, height);}
+public String getName() {
+return name;}
+public double getBMI() {
+double bmi = (weight * KILOGRAMS_PER_POUND) / Math.pow(height * METERS_PER_INCH, 2);
+return Math.round(bmi * 100.0) / 100.0;}
+public String getStatus() {
+double bmi = getBMI();
+if (bmi < 16) return "seriously underweight";
+if (bmi < 18) return "underweight";
+if (bmi < 24) return "normal weight";
+if (bmi < 29) return "over weight";
+if (bmi < 35) return "seriously over weight";
+return "gravely over weight";}}

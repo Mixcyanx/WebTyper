@@ -1,0 +1,26 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+int a,b;
+double c;
+a=in.nextInt();
+b=in.nextInt();
+c=in.nextDouble();
+System.out.println(MyTestClass.max(a,b));
+System.out.println(MyTestClass.max(a,c));
+System.out.println(MyTestClass.max(a,b,c));
+}
+}
+class MyTestClass {
+public static int max(int a,int b) {
+return a>b?a:b;
+}
+public static double max(int a,double b) {
+return a>b?a:b;
+}
+public static double max(int a,int b,double c) {
+double max=(a>b?a:b);
+return max>c?max:c;
+}
+}

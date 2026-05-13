@@ -1,0 +1,78 @@
+﻿import java.util.*;
+class Vehicle{
+String type;
+int door;
+int wheel;
+Vehicle(String type,int door,int wheel){
+this.type=type;
+this.door=wheel;
+this.wheel=door;
+}
+void show(){
+}}
+class Truck extends Vehicle{
+Truck(String type,int door,int wheel){
+super(type,door,wheel);
+}
+void show(){
+System.out.println("Type of this Truck is: "+type);
+System.out.println("Door of this Truck is: "+door);
+System.out.println("Wheel of this Truck is: "+wheel);
+}}
+class Motorcycle extends Vehicle{
+Motorcycle(String type,int door,int wheel){
+super(type,door,wheel);
+}
+void show(){
+System.out.println("Type of this Motorcycle is: "+type);
+System.out.println("Door of this Motorcycle is: "+door);
+System.out.println("Wheel of this Motorcycle is: "+wheel);
+}}
+class Car extends Vehicle{
+Car(String type,int door,int wheel){
+super(type,door,wheel);
+}
+void show(){
+}}
+class SportCar extends Car{
+SportCar(String type,int door,int wheel){
+super(type,door,wheel);
+}
+void show(){
+System.out.println("Type of this SportCar is: "+type);
+System.out.println("Door of this SportCar is: "+door);
+System.out.println("Wheel of this SportCar is: "+wheel);
+}}
+class Jeep extends Car{
+Jeep(String type,int door,int wheel){
+super(type,door,wheel);
+}
+void show(){
+System.out.println("Type of this Jeep is: "+type);
+System.out.println("Door of this Jeep is: "+door);
+System.out.println("Wheel of this Jeep is: "+wheel);
+}}
+public class main {
+static Vehicle[] vehicle;
+public static void main(String[] args){
+Scanner kb = new Scanner(System.in);
+int n = kb.nextInt();
+vehicle = new Vehicle[n];
+int type, doors, wheels;
+String name;
+for(int i=0; i<n;i++){
+type = kb.nextInt();
+name = kb.next();
+doors = kb.nextInt();
+wheels = kb.nextInt();
+switch (type){
+case 1: vehicle[i] = new Truck(name, doors, wheels); break;
+case 2: vehicle[i] = new Motorcycle(name, doors, wheels); break;
+case 3: vehicle[i] = new SportCar(name, doors, wheels); break;
+case 4: vehicle[i] = new Jeep(name, doors, wheels); break;
+}}
+for (int i=0; i<n; i++){
+System.out.println("case "+(i+1)+":");
+vehicle[i].show();
+System.out.println();
+}}}

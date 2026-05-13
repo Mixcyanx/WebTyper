@@ -1,0 +1,21 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+while(true) {
+String s=in.next();
+if(s.equals("0")) break;
+int oddSum=0;
+int evenSum=0;
+for(int i=0;i<s.length();i++) {
+int digit=s.charAt(i)-'0';
+int posFromRight=s.length()-i;
+if(posFromRight%2==1) {
+oddSum+=digit;
+} else {
+evenSum+=digit;}}
+int diff=oddSum-evenSum;
+if(diff%11==0) {
+System.out.print(s+" is a multiple of 11.\r\n");
+} else {
+System.out.print(s+" is not a multiple of 11.\r\n");}}}}

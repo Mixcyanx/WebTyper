@@ -1,0 +1,23 @@
+﻿import java.util.*;
+class Grandparent{
+Grandparent(){
+System.out.println("This is the Grandparent's default constructor");
+}}
+class Parent extends Grandparent{
+Parent(){
+System.out.println("This is the Parent's default constructor");
+}}
+class Child extends Parent{
+Child(){
+System.out.println("This is the Child's default constructor");
+}}
+public class main {
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+System.out.println("Creating Grandparent's object ======> ");
+Grandparent g = new Grandparent();
+System.out.println("\nCreating Parent's object ======> ");
+Parent p = new Parent();
+System.out.println("\nCreating Child's object ======> ");
+Child c = new Child();
+}}

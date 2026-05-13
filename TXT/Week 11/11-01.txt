@@ -1,0 +1,75 @@
+﻿import java.util.*;
+public class main {
+static Payment[] numbers;
+static Scanner kb;
+public static void main(String[] args) {
+kb=new Scanner(System.in);
+int n=kb.nextInt();
+int t;
+numbers=new Payment[n];
+for(int i=0;i<n;i++) {
+t=kb.nextInt();
+switch(t) {
+case 1: createCashPaymentObject(i); break;
+case 2: createCreditCardPaymentObject(i); break;
+}
+}
+for(int i=0;i<numbers.length;i++) {
+System.out.print("Case "+(i+1)+":\r\n");
+numbers[i].paymentDetails();
+System.out.print("\r\n");
+}
+}
+private static void createCreditCardPaymentObject(int i) {
+double a=kb.nextDouble();
+String n=kb.next();
+String e=kb.next();
+String c=kb.nextLine().trim();
+numbers[i]=new CreditCardPayment(a,n,e,c);
+}
+private static void createCashPaymentObject(int i) {
+double a=kb.nextDouble();
+numbers[i]=new CashPayment(a);
+}
+}
+abstract class Payment {
+protected double amount;
+public Payment() {
+amount=0;
+}
+public Payment(double amount) {
+this.amount=amount;
+}
+public void setPayment(double amount) {
+this.amount=amount;
+}
+public double getPayment() {
+return amount;
+}
+public abstract void paymentDetails();
+}
+class CashPayment extends Payment {
+public CashPayment(double amount) {
+super(amount);
+}
+public void paymentDetails() {
+System.out.print("The cash payment amount is "+amount+"\r\n");
+}
+}
+class CreditCardPayment extends Payment {
+private String name;
+private String expiration;
+private String creditCard;
+public CreditCardPayment(double amount,String name,String expiration,String creditCard) {
+super(amount);
+this.name=name;
+this.expiration=expiration;
+this.creditCard=creditCard;
+}
+public void paymentDetails() {
+System.out.print("The credit card payment amount is "+amount+"\r\n");
+System.out.print("The name on the card is: "+name+"\r\n");
+System.out.print("The expiration date is: "+expiration+"\r\n");
+System.out.print("The credit card number is:  "+creditCard+"\r\n");
+}
+}

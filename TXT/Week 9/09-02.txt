@@ -1,0 +1,27 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+int k=in.nextInt();
+String s=in.next();
+ArrayList<Integer> len=new ArrayList<Integer>();
+for(int i=0;i<s.length();){
+int j=i+1;
+while(j<s.length()&&same(s.charAt(i),s.charAt(j)))j++;
+len.add(j-i);
+i=j;}
+int m=len.size();
+int[] exact=new int[m+1];
+for(int i=m-1;i>=0;i--)exact[i]=len.get(i)==k?exact[i+1]+1:0;
+int ans=0;
+for(int i=0;i<m;i++){
+if(len.get(i)>=k){
+int cnt=1;
+int p=i+1;
+cnt+=exact[p];
+p+=exact[p];
+if(p<m&&len.get(p)>=k)cnt++;
+if(cnt>ans)ans=cnt;}}
+System.out.print(ans*k+"\r\n");}
+static boolean same(char a,char b) {
+return Character.isUpperCase(a)==Character.isUpperCase(b);}}

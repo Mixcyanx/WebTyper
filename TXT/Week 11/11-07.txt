@@ -1,0 +1,32 @@
+﻿import java.util.*;
+class Vehicle{
+Vehicle(){
+System.out.println("This is Vehicle's constructor");
+}}
+
+class Car extends Vehicle{
+Car(){
+System.out.println("This is Car's constructor");
+}}
+
+class Taxi extends Car{
+Taxi(){
+System.out.println("This is Taxi's constructor");
+}}
+
+class Bus extends Car{
+Bus(){
+System.out.println("This is Bus's constructor");
+}}
+
+public class main {
+public static void main(String[] args) {
+
+Car car = new Car();
+System.out.println("---");
+
+Taxi taxi = new Taxi();
+System.out.println("---");
+
+Bus bus = new Bus();
+}}
