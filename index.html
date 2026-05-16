@@ -102,7 +102,7 @@
       <img src="https://raw.githubusercontent.com/Mixcyanx/WebTyper/main/WebTyper.png" style="width:48px;height:48px;border-radius:10px;" />
       <div>
         <h1>nRF52840 BLE 打字傳輸器</h1>
-        <div class="ver">v2.2.6 — 分段 ACK 握手 + GitHub TXT 庫 + 打字同步顯示</div>
+        <div class="ver">v2.2.7 — 分段 ACK 握手 + GitHub TXT 庫 + 打字同步顯示</div>
       </div>
     </div>
     <div class="sub">Android Chrome 透過 Web Bluetooth 連線到 nRF52840，將文字經由 BLE 傳給開發板，再由開發板用 USB HID Keyboard 打字到電腦。ios裝置得下載支援BLE的瀏覽器，如:Bluefy。</div>
@@ -169,6 +169,10 @@
         </div>
       </div>
       <div class="full">
+        <div class="checkbox" style="margin-bottom:10px;">
+          <input id="ideMode" type="checkbox" />
+          <span>IDE 模式（僅在縮排變淺時按 Backspace，不補 Tab；未勾選則原文送出）</span>
+        </div>
         <label for="textInput">文字輸入區</label>
         <textarea id="textInput" placeholder="請貼上要傳給 nRF52840 的文字，或從上方庫存點選載入。"></textarea>
       </div>
@@ -211,6 +215,8 @@
   const speedEl   = document.getElementById('speed');
   const autoImeEl = document.getElementById('autoIme');
   const imeCmdEl  = document.getElementById('imeCommand');
+  const ideModeEl = document.getElementById('ideMode');
+
   /** 計算行首縮排層級（Tab；4 空格 = 1 Tab） */
   function parseLineIndent(line) {
     let tabs = 0, i = 0;
@@ -226,38 +232,29 @@
     return { tabs, body: line.slice(i) };
   }
 
-  function estimateAutoIndent(prev) {
-    const prevTrimEnd = prev.body.trimEnd();
-    const prevOnly = prev.body.trim();
-    let auto = prev.tabs;
-    if (prevTrimEnd.endsWith('{')) auto = prev.tabs + 1;
-    else if (prevOnly === '}' || prevOnly === '};') auto = Math.max(0, prev.tabs - 1);
-    return auto;
-  }
-
-  /**
-   * Enter 後：先 Backspace 清掉 IDE 自動縮排，再 Tab 打到目標層級，最後輸入內容。
-   * 上一行以 { 結尾 → IDE 自動 = 上一層+1；上一行是 } → 自動 = 上一層-1。
-   */
-  function formatTyping(text) {
-    const lines = text.replace(/\r\n/g, '\n').split('\n').map(parseLineIndent);
+  /** IDE 模式：只退格、不補 Tab；縮排完全沿用原文行首空格/Tab */
+  function formatTypingIde(text) {
+    const rawLines = text.replace(/\r\n/g, '\n').split('\n');
+    const parsed = rawLines.map(parseLineIndent);
     const out = [];
 
-    for (let i = 0; i < lines.length; i++) {
-      const { tabs: want, body } = lines[i];
-      const trimmed = body.trim();
-      const isCloseBrace = trimmed === '}' || trimmed === '};';
-
+    for (let i = 0; i < rawLines.length; i++) {
       if (i === 0) {
-        out.push(want ? '\t'.repeat(want) + body : body);
+        out.push(rawLines[i]);
         continue;
       }
 
-      const auto = estimateAutoIndent(lines[i - 1]);
+      const prev = parsed[i - 1];
+      const curr = parsed[i];
+      const prevEndsOpen = prev.body.trimEnd().endsWith('{');
+      const isClose = curr.body.trim() === '}' || curr.body.trim() === '};';
+
       out.push('\n');
-      if (auto > 0) out.push('\b'.repeat(auto));
-      if (want > 0) out.push('\t'.repeat(want));
-      out.push(isCloseBrace ? trimmed : body.replace(/^[\t ]+/, ''));
+      // 縮排變淺：每少一層（4 空格）Backspace 一次；{ 的下一行若是 } 則不退格
+      if (!(isClose && prevEndsOpen) && curr.tabs < prev.tabs) {
+        out.push('\b'.repeat(prev.tabs - curr.tabs));
+      }
+      out.push(rawLines[i]);
     }
     return out.join('');
   }
@@ -369,7 +366,7 @@
     if (!isConnected()) throw new Error('請先連線');
     const raw = textInput.value;
     if (!raw.trim()) throw new Error('請先輸入文字');
-    const text = formatTyping(raw);
+    const text = ideModeEl.checked ? formatTypingIde(raw) : raw;
     busy = true; stopFlag = false;
     const cps = Number(speedEl.value);
     const switchIme = autoImeEl.checked ? '1' : '0';
