@@ -102,7 +102,7 @@
       <img src="https://raw.githubusercontent.com/Mixcyanx/WebTyper/main/WebTyper.png" style="width:48px;height:48px;border-radius:10px;" />
       <div>
         <h1>nRF52840 BLE 打字傳輸器</h1>
-        <div class="ver">v2.2.1 — 分段 ACK 握手 + GitHub TXT 庫 + 打字同步顯示</div>
+        <div class="ver">v2.2.2 — 分段 ACK 握手 + GitHub TXT 庫 + 打字同步顯示</div>
       </div>
     </div>
     <div class="sub">Android Chrome 透過 Web Bluetooth 連線到 nRF52840，將文字經由 BLE 傳給開發板，再由開發板用 USB HID Keyboard 打字到電腦。ios裝置得下載支援BLE的瀏覽器，如:Bluefy。</div>
@@ -171,7 +171,7 @@
       <div class="full">
         <div class="checkbox" style="margin-bottom:10px;">
           <input id="smartBrace" type="checkbox" checked />
-          <span>IDE 智慧排版（換行後先退格再輸入正確 Tab，避免越打越縮排；需已燒錄支援 Backspace 的固件）</span>
+          <span>IDE 智慧排版（Enter 後只退「多餘」縮排；} 前退一格；需燒錄支援 Backspace 的固件）</span>
         </div>
         <label for="textInput">文字輸入區</label>
         <textarea id="textInput" placeholder="請貼上要傳給 nRF52840 的文字，或從上方庫存點選載入。"></textarea>
@@ -233,27 +233,38 @@
   }
 
   /**
-   * 抵消 IDE 自動縮排：每行換行後先 Backspace（層數 = 該行 Tab 數），
-   * 再打出對應 Tab；單獨的 } / }; 只退格後直接輸入。
+   * Enter 後 IDE 會自動縮排；只退掉「多出來」的 Tab，不能把 Enter 退掉。
+   * 上一行以 { 結尾 → 自動縮排 = 上一層 +1；上一行是 } → 自動縮排 = 上一層 -1。
    */
   function formatTyping(text) {
-    const lines = text.replace(/\r\n/g, '\n').split('\n');
+    const lines = text.replace(/\r\n/g, '\n').split('\n').map(parseLineIndent);
     const out = [];
+
     for (let i = 0; i < lines.length; i++) {
-      const { tabs, body } = parseLineIndent(lines[i]);
-      const trimmed = body.trim();
+      const { tabs: want, body } = lines[i];
       if (i === 0) {
-        out.push(tabs ? '\t'.repeat(tabs) + body : body);
+        out.push(want ? '\t'.repeat(want) + body : body);
         continue;
       }
-      if (trimmed === '}' || trimmed === '};') {
-        const back = tabs > 0 ? '\b'.repeat(tabs) : '\b';
-        out.push('\n' + back + trimmed);
-      } else if (tabs > 0) {
-        out.push('\n' + '\b'.repeat(tabs) + '\t'.repeat(tabs) + body);
-      } else {
-        out.push('\n' + body);
-      }
+
+      const prev = lines[i - 1];
+      const prevTrimEnd = prev.body.trimEnd();
+      const prevOnly = prev.body.trim();
+
+      let auto = prev.tabs;
+      if (prevTrimEnd.endsWith('{')) auto = prev.tabs + 1;
+      else if (prevOnly === '}' || prevOnly === '};') auto = Math.max(0, prev.tabs - 1);
+
+      const trimmed = body.trim();
+      const isCloseBrace = trimmed === '}' || trimmed === '};';
+      let delta = auto - want;
+
+      out.push('\n');
+      if (delta > 0) out.push('\b'.repeat(delta));
+      else if (delta < 0) out.push('\t'.repeat(-delta));
+
+      if (isCloseBrace) out.push(trimmed);
+      else out.push(body.replace(/^[\t ]+/, ''));
     }
     return out.join('');
   }
