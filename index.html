@@ -169,6 +169,10 @@
         </div>
       </div>
       <div class="full">
+        <div class="checkbox" style="margin-bottom:10px;">
+          <input id="smartBrace" type="checkbox" checked />
+          <span>關閉大括號前自動退格（單獨一行的 }：換行 → Backspace → 輸入 }，適合 Java/IDE）</span>
+        </div>
         <label for="textInput">文字輸入區</label>
         <textarea id="textInput" placeholder="請貼上要傳給 nRF52840 的文字，或從上方庫存點選載入。"></textarea>
       </div>
@@ -211,6 +215,23 @@
   const speedEl   = document.getElementById('speed');
   const autoImeEl = document.getElementById('autoIme');
   const imeCmdEl  = document.getElementById('imeCommand');
+  const smartBraceEl = document.getElementById('smartBrace');
+
+  /** 單獨一行的 } / }; → 換行 + Backspace + }，抵消 IDE 自動縮排 */
+  function formatBraceTyping(text) {
+    const lines = text.replace(/\r\n/g, '\n').split('\n');
+    const out = [];
+    for (let i = 0; i < lines.length; i++) {
+      const t = lines[i].trim();
+      if (t === '}' || t === '};') {
+        out.push('\n\b' + t);
+      } else {
+        if (i > 0) out.push('\n');
+        out.push(lines[i]);
+      }
+    }
+    return out.join('');
+  }
 
   function log(msg) {
     const t = new Date().toLocaleTimeString();
@@ -317,8 +338,9 @@
   async function sendTypingJob() {
     if (busy) return;
     if (!isConnected()) throw new Error('請先連線');
-    const text = textInput.value;
-    if (!text.trim()) throw new Error('請先輸入文字');
+    const raw = textInput.value;
+    if (!raw.trim()) throw new Error('請先輸入文字');
+    const text = smartBraceEl.checked ? formatBraceTyping(raw) : raw;
     busy = true; stopFlag = false;
     const cps = Number(speedEl.value);
     const switchIme = autoImeEl.checked ? '1' : '0';
