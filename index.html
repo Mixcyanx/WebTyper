@@ -102,7 +102,7 @@
       <img src="https://raw.githubusercontent.com/Mixcyanx/WebTyper/main/WebTyper.png" style="width:48px;height:48px;border-radius:10px;" />
       <div>
         <h1>nRF52840 BLE 打字傳輸器</h1>
-        <div class="ver">v2.2.5 — 分段 ACK 握手 + GitHub TXT 庫 + 打字同步顯示</div>
+        <div class="ver">v2.2.6 — 分段 ACK 握手 + GitHub TXT 庫 + 打字同步顯示</div>
       </div>
     </div>
     <div class="sub">Android Chrome 透過 Web Bluetooth 連線到 nRF52840，將文字經由 BLE 傳給開發板，再由開發板用 USB HID Keyboard 打字到電腦。ios裝置得下載支援BLE的瀏覽器，如:Bluefy。</div>
@@ -169,14 +169,6 @@
         </div>
       </div>
       <div class="full">
-        <div class="checkbox" style="margin-bottom:8px;">
-          <input id="smartBrace" type="checkbox" checked />
-          <span>智慧排版（依原文 Tab 層級修正縮排）</span>
-        </div>
-        <div class="checkbox" style="margin-bottom:10px;">
-          <input id="plainEditor" type="checkbox" />
-          <span>記事本模式（編輯器不會自動縮排時勾選；Eclipse/IDEA/VS Code 請勿勾選）</span>
-        </div>
         <label for="textInput">文字輸入區</label>
         <textarea id="textInput" placeholder="請貼上要傳給 nRF52840 的文字，或從上方庫存點選載入。"></textarea>
       </div>
@@ -219,9 +211,6 @@
   const speedEl   = document.getElementById('speed');
   const autoImeEl = document.getElementById('autoIme');
   const imeCmdEl  = document.getElementById('imeCommand');
-  const smartBraceEl = document.getElementById('smartBrace');
-  const plainEditorEl = document.getElementById('plainEditor');
-
   /** 計算行首縮排層級（Tab；4 空格 = 1 Tab） */
   function parseLineIndent(line) {
     let tabs = 0, i = 0;
@@ -246,8 +235,11 @@
     return auto;
   }
 
-  /** IDE 模式：Enter 後編輯器已自動縮排，只退多餘 Tab 或補不足 Tab */
-  function formatTypingIde(text) {
+  /**
+   * Enter 後：先 Backspace 清掉 IDE 自動縮排，再 Tab 打到目標層級，最後輸入內容。
+   * 上一行以 { 結尾 → IDE 自動 = 上一層+1；上一行是 } → 自動 = 上一層-1。
+   */
+  function formatTyping(text) {
     const lines = text.replace(/\r\n/g, '\n').split('\n').map(parseLineIndent);
     const out = [];
 
@@ -261,38 +253,13 @@
         continue;
       }
 
-      const delta = estimateAutoIndent(lines[i - 1]) - want;
+      const auto = estimateAutoIndent(lines[i - 1]);
       out.push('\n');
-      if (delta > 0) out.push('\b'.repeat(delta));
-      else if (delta < 0) out.push('\t'.repeat(-delta));
-      out.push(isCloseBrace ? trimmed : body.replace(/^[\t ]+/, ''));
-    }
-    return out.join('');
-  }
-
-  /** 記事本模式：每行 Enter 後手動打出完整 Tab，不做 Backspace */
-  function formatTypingPlain(text) {
-    const lines = text.replace(/\r\n/g, '\n').split('\n').map(parseLineIndent);
-    const out = [];
-
-    for (let i = 0; i < lines.length; i++) {
-      const { tabs: want, body } = lines[i];
-      const trimmed = body.trim();
-      const isCloseBrace = trimmed === '}' || trimmed === '};';
-
-      if (i === 0) {
-        out.push(want ? '\t'.repeat(want) + body : body);
-        continue;
-      }
-      out.push('\n');
+      if (auto > 0) out.push('\b'.repeat(auto));
       if (want > 0) out.push('\t'.repeat(want));
       out.push(isCloseBrace ? trimmed : body.replace(/^[\t ]+/, ''));
     }
     return out.join('');
-  }
-
-  function formatTyping(text) {
-    return plainEditorEl.checked ? formatTypingPlain(text) : formatTypingIde(text);
   }
 
   function log(msg) {
@@ -402,7 +369,7 @@
     if (!isConnected()) throw new Error('請先連線');
     const raw = textInput.value;
     if (!raw.trim()) throw new Error('請先輸入文字');
-    const text = smartBraceEl.checked ? formatTyping(raw) : raw;
+    const text = formatTyping(raw);
     busy = true; stopFlag = false;
     const cps = Number(speedEl.value);
     const switchIme = autoImeEl.checked ? '1' : '0';
