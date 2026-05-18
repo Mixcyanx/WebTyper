@@ -1,0 +1,34 @@
+﻿import java.util.Scanner;
+
+public class main {
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+
+Animal dog = new Dog(); 
+Animal cat = new Cat();
+
+dog.run();
+cat.run();
+
+}
+}
+
+interface Animal {
+abstract void run();
+}
+
+class Dog implements Animal {
+
+public void run() {
+System.out.println("This is Dog's run method");
+}
+
+}
+
+class Cat implements Animal {
+
+public void run() {
+System.out.println("This is Cat's run method");
+}
+
+}

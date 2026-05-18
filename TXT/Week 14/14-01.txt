@@ -1,0 +1,23 @@
+﻿import java.util.*;
+
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+
+int a,b;
+
+while(true){
+try{
+a=in.nextInt();
+b=in.nextInt();
+
+System.out.println("Sum is "+(a+b));
+break;
+
+}catch(Exception e){
+System.out.println("Incorrect input and re-enter two integers: ");
+in.nextLine();
+}
+}
+}
+}

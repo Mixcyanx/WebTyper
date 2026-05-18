@@ -1,0 +1,84 @@
+﻿import java.util.*;
+public class main {
+static Vehicle[] vehicle;
+public static void main(String[] args) {
+Scanner kb=new Scanner(System.in);
+int n=kb.nextInt();
+vehicle=new Vehicle[n];
+int type,doors,wheels;
+String name;
+for(int i=0;i<n;i++) {
+type=kb.nextInt();
+name=kb.next();
+doors=kb.nextInt();
+wheels=kb.nextInt();
+switch(type) {
+case 1: vehicle[i]=new Truck(name,doors,wheels); break;
+case 2: vehicle[i]=new Motorcycle(name,doors,wheels); break;
+case 3: vehicle[i]=new SportCar(name,doors,wheels); break;
+case 4: vehicle[i]=new Jeep(name,doors,wheels); break;
+}
+}
+for(int i=0;i<n;i++) {
+System.out.print("case "+(i+1)+":\r\n");
+vehicle[i].show();
+System.out.print("\r\n");
+}
+}
+}
+abstract class Vehicle {
+protected String type;
+protected int wheel;
+protected int door;
+public Vehicle(String type,int door,int wheel) {
+this.type=type;
+this.door=door;
+this.wheel=wheel;
+}
+public abstract void show();
+}
+abstract class Car extends Vehicle {
+public Car(String type,int door,int wheel) {
+super(type,door,wheel);
+}
+}
+class Truck extends Vehicle {
+public Truck(String type,int door,int wheel) {
+super(type,door,wheel);
+}
+public void show() {
+System.out.print("Type of this Truck is: "+type+"\r\n");
+System.out.print("Door of this Truck is: "+wheel+"\r\n");
+System.out.print("Wheel of this Truck is: "+door+"\r\n");
+}
+}
+class Motorcycle extends Vehicle {
+public Motorcycle(String type,int door,int wheel) {
+super(type,door,wheel);
+}
+public void show() {
+System.out.print("Type of this Motorcycle is: "+type+"\r\n");
+System.out.print("Door of this Motorcycle is: "+wheel+"\r\n");
+System.out.print("Wheel of this Motorcycle is: "+door+"\r\n");
+}
+}
+class SportCar extends Car {
+public SportCar(String type,int door,int wheel) {
+super(type,door,wheel);
+}
+public void show() {
+System.out.print("Type of this SportCar is: "+type+"\r\n");
+System.out.print("Door of this SportCar is: "+wheel+"\r\n");
+System.out.print("Wheel of this SportCar is: "+door+"\r\n");
+}
+}
+class Jeep extends Car {
+public Jeep(String type,int door,int wheel) {
+super(type,door,wheel);
+}
+public void show() {
+System.out.print("Type of this Jeep is: "+type+"\r\n");
+System.out.print("Door of this Jeep is: "+wheel+"\r\n");
+System.out.print("Wheel of this Jeep is: "+door+"\r\n");
+}
+}

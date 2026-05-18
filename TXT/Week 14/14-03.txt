@@ -1,0 +1,35 @@
+﻿import java.util.Scanner;
+
+public class main {
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+int a = in.nextInt();
+int b = in.nextInt();
+
+sub(a, b);
+}
+
+public static void sub (int x, int y){
+if (y == 0){
+try{
+throw new MyException(0);
+} catch (MyException e){
+System.out.println(e.toString());
+}
+} else {
+System.out.println("The result is: " + x / y);
+}
+}
+}
+
+class MyException extends Exception {
+int n;
+
+public MyException(int n){
+this.n=n;
+}
+
+public String toString(){
+return "Error program\nError code "+n+" "+"\nPlease contact manager\n";
+}
+}
