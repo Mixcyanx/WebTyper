@@ -102,7 +102,7 @@
       <img src="https://raw.githubusercontent.com/Mixcyanx/WebTyper/main/WebTyper.png" style="width:48px;height:48px;border-radius:10px;" />
       <div>
         <h1>nRF52840 BLE 打字傳輸器</h1>
-        <div class="ver">v2.2.7 — 分段 ACK 握手 + GitHub TXT 庫 + 打字同步顯示</div>
+        <div class="ver">v2.3.0 — IDE 模式縮排修正（Enter 後僅退多餘層，不重複打行首 Tab）</div>
       </div>
     </div>
     <div class="sub">Android Chrome 透過 Web Bluetooth 連線到 nRF52840，將文字經由 BLE 傳給開發板，再由開發板用 USB HID Keyboard 打字到電腦。ios裝置得下載支援BLE的瀏覽器，如:Bluefy。</div>
@@ -171,7 +171,7 @@
       <div class="full">
         <div class="checkbox" style="margin-bottom:10px;">
           <input id="ideMode" type="checkbox" />
-          <span>IDE 模式（僅在縮排變淺時按 Backspace，不補 Tab；未勾選則原文送出）</span>
+          <span>IDE 模式（Enter 後退掉 IDE 多餘縮排，不補 Tab、不重複打行首空白；未勾選則原文送出）</span>
         </div>
         <label for="textInput">文字輸入區</label>
         <textarea id="textInput" placeholder="請貼上要傳給 nRF52840 的文字，或從上方庫存點選載入。"></textarea>
@@ -232,29 +232,40 @@
     return { tabs, body: line.slice(i) };
   }
 
-  /** IDE 模式：只退格、不補 Tab；縮排完全沿用原文行首空格/Tab */
+  /** 估算 Enter 後 IDE 自動縮排層級 */
+  function estimateIdeIndent(prev) {
+    const prevTrimEnd = prev.body.trimEnd();
+    const prevOnly = prev.body.trim();
+    if (prevTrimEnd.endsWith('{')) return prev.tabs + 1;
+    if (prevOnly === '}' || prevOnly === '};') return Math.max(0, prev.tabs - 1);
+    return prev.tabs;
+  }
+
+  /**
+   * IDE 模式 v2.3：Enter 後若 IDE 比原文更深 → Backspace 差額；
+   * 只打內容（去掉行首空白），不補 Tab，避免與 IDE 自動縮排疊加。
+   */
   function formatTypingIde(text) {
     const rawLines = text.replace(/\r\n/g, '\n').split('\n');
     const parsed = rawLines.map(parseLineIndent);
     const out = [];
 
     for (let i = 0; i < rawLines.length; i++) {
+      const { tabs: want, body } = parsed[i];
+      const trimmed = body.trim();
+      const isClose = trimmed === '}' || trimmed === '};';
+
       if (i === 0) {
         out.push(rawLines[i]);
         continue;
       }
 
-      const prev = parsed[i - 1];
-      const curr = parsed[i];
-      const prevEndsOpen = prev.body.trimEnd().endsWith('{');
-      const isClose = curr.body.trim() === '}' || curr.body.trim() === '};';
+      const auto = estimateIdeIndent(parsed[i - 1]);
+      const backs = Math.max(0, auto - want);
 
       out.push('\n');
-      // 縮排變淺：每少一層（4 空格）Backspace 一次；{ 的下一行若是 } 則不退格
-      if (!(isClose && prevEndsOpen) && curr.tabs < prev.tabs) {
-        out.push('\b'.repeat(prev.tabs - curr.tabs));
-      }
-      out.push(rawLines[i]);
+      if (backs > 0) out.push('\b'.repeat(backs));
+      out.push(isClose ? trimmed : body.replace(/^[\t ]+/, ''));
     }
     return out.join('');
   }
