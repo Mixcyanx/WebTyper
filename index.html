@@ -114,7 +114,6 @@
     <div class="row">
       <button id="btnConnect" class="good">連接藍牙</button>
       <button id="btnDisconnect" class="danger">中斷連線</button>
-      <button id="btnPing" class="secondary">測試通訊</button>
     </div>
     <div class="hint" style="margin-top:10px;">需要 <b>HTTPS</b> 或 localhost，以 Android Chrome 開啟。</div>
   </div>
@@ -169,19 +168,15 @@
         </div>
       </div>
       <div class="full">
-        <div class="checkbox" style="margin-bottom:10px;">
-          <input id="ideMode" type="checkbox" />
-          <span>IDE 模式（配合 Eclipse/IDEA/VS Code：Enter 後退多餘或補不足 Tab，使畫面與輸入一致；記事本請勿勾選）</span>
-        </div>
         <label for="textInput">文字輸入區</label>
         <textarea id="textInput" placeholder="請貼上要傳給 nRF52840 的文字，或從上方庫存點選載入。"></textarea>
       </div>
     </div>
     <div class="row" style="margin-top:12px;">
-      <button id="btnSend" class="good">傳送到開發板</button>
-      <button id="btnStop" class="warn">停止打字</button>
       <button id="btnPaste" class="purple">貼上文字</button>
       <button id="btnClear">清空文字</button>
+      <button id="btnSend" class="good">傳送到開發板</button>
+      <button id="btnStop" class="warn">停止打字</button>
     </div>
   </div>
 
@@ -215,60 +210,6 @@
   const speedEl   = document.getElementById('speed');
   const autoImeEl = document.getElementById('autoIme');
   const imeCmdEl  = document.getElementById('imeCommand');
-  const ideModeEl = document.getElementById('ideMode');
-
-  /** 計算行首縮排層級（Tab；4 空格 = 1 Tab） */
-  function parseLineIndent(line) {
-    let tabs = 0, i = 0;
-    while (i < line.length) {
-      if (line[i] === '\t') { tabs++; i++; }
-      else if (line[i] === ' ') {
-        let s = 0;
-        while (i < line.length && line[i] === ' ') { s++; i++; }
-        tabs += Math.floor(s / 4);
-        if (s % 4) tabs += 1;
-      } else break;
-    }
-    return { tabs, body: line.slice(i) };
-  }
-
-  /** 估算 Enter 後 IDE 自動縮排層級 */
-  function estimateIdeIndent(prev) {
-    const prevTrimEnd = prev.body.trimEnd();
-    const prevOnly = prev.body.trim();
-    if (prevTrimEnd.endsWith('{')) return prev.tabs + 1;
-    if (prevOnly === '}' || prevOnly === '};') return Math.max(0, prev.tabs - 1);
-    return prev.tabs;
-  }
-
-  /**
-   * IDE 模式 v2.3.1：對齊 Eclipse/IDEA/VS Code 自動縮排。
-   * Enter 後 IDE 較深 → Backspace；較淺 → 補原文層級 Tab；再打正文（不含行首空白）。
-   */
-  function formatTypingIde(text) {
-    const rawLines = text.replace(/\r\n/g, '\n').split('\n');
-    const parsed = rawLines.map(parseLineIndent);
-    const out = [];
-
-    for (let i = 0; i < rawLines.length; i++) {
-      const { tabs: want, body } = parsed[i];
-      const trimmed = body.trim();
-      const isClose = trimmed === '}' || trimmed === '};';
-
-      if (i === 0) {
-        out.push(rawLines[i]);
-        continue;
-      }
-
-      const auto = estimateIdeIndent(parsed[i - 1]);
-      out.push('\n');
-      if (auto > want) out.push('\b'.repeat(auto - want));
-      else if (want > auto) out.push('\t'.repeat(want - auto));
-      out.push(isClose ? trimmed : body.replace(/^[\t ]+/, ''));
-    }
-    return out.join('');
-  }
-
   function log(msg) {
     const t = new Date().toLocaleTimeString();
     logBox.textContent += `\n[${t}] ${msg}`;
@@ -360,7 +301,7 @@
 
   // ── 傳送一段（pipeline：送完 END 不等 DONE）──
   async function sendSegment(seg, cps, switchIme, imeCmd) {
-    if (!await sendAndAck(`BEGIN ${cps} ${switchIme} ${imeCmd}`)) throw new Error('BEGIN 未收到 ACK');
+    if (!await sendAndAck(`BEGIN ${cps} ${switchIme} ${imeCmd} 0`)) throw new Error('BEGIN 未收到 ACK');
     for (let i = 0; i < seg.length; i += CHUNK_SIZE) {
       if (stopFlag) { await sendLine('STOP'); return false; }
       const encoded = btoa(seg.slice(i, i + CHUNK_SIZE));
@@ -376,7 +317,7 @@
     if (!isConnected()) throw new Error('請先連線');
     const raw = textInput.value;
     if (!raw.trim()) throw new Error('請先輸入文字');
-    const text = ideModeEl.checked ? formatTypingIde(raw) : raw;
+    const text = raw;
     busy = true; stopFlag = false;
     const cps = Number(speedEl.value);
     const switchIme = autoImeEl.checked ? '1' : '0';
@@ -501,10 +442,6 @@
     try { await connectBle(); } catch (e) { logBox.textContent = '連線失敗：' + e.message; setStatus('連線失敗'); }
   });
   document.getElementById('btnDisconnect').addEventListener('click', () => device?.gatt?.disconnect());
-  document.getElementById('btnPing').addEventListener('click', async () => {
-    try { logBox.textContent = await sendAndAck('PING') ? 'PING → OK' : 'PING 無回應'; }
-    catch (e) { logBox.textContent = 'PING 失敗：' + e.message; }
-  });
   document.getElementById('btnSend').addEventListener('click', async () => {
     try { await sendTypingJob(); }
     catch (e) { stopTypingSync(); busy = false; logBox.textContent = '傳送失敗：' + e.message; setStatus('傳送失敗'); }
