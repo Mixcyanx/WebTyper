@@ -102,7 +102,7 @@
       <img src="https://raw.githubusercontent.com/Mixcyanx/WebTyper/main/WebTyper.png" style="width:48px;height:48px;border-radius:10px;" />
       <div>
         <h1>nRF52840 BLE 打字傳輸器</h1>
-        <div class="ver">v2.2.0 — 分段 ACK 握手 + GitHub TXT 庫 + 打字同步顯示</div>
+        <div class="ver">v2.3.1 — IDE 模式對齊編輯器自動縮排，輸出與輸入一致</div>
       </div>
     </div>
     <div class="sub">Android Chrome 透過 Web Bluetooth 連線到 nRF52840，將文字經由 BLE 傳給開發板，再由開發板用 USB HID Keyboard 打字到電腦。ios裝置得下載支援BLE的瀏覽器，如:Bluefy。</div>
@@ -114,7 +114,6 @@
     <div class="row">
       <button id="btnConnect" class="good">連接藍牙</button>
       <button id="btnDisconnect" class="danger">中斷連線</button>
-      <button id="btnPing" class="secondary">測試通訊</button>
     </div>
     <div class="hint" style="margin-top:10px;">需要 <b>HTTPS</b> 或 localhost，以 Android Chrome 開啟。</div>
   </div>
@@ -174,10 +173,10 @@
       </div>
     </div>
     <div class="row" style="margin-top:12px;">
-      <button id="btnSend" class="good">傳送到開發板</button>
-      <button id="btnStop" class="warn">停止打字</button>
       <button id="btnPaste" class="purple">貼上文字</button>
       <button id="btnClear">清空文字</button>
+      <button id="btnSend" class="good">傳送到開發板</button>
+      <button id="btnStop" class="warn">停止打字</button>
     </div>
   </div>
 
@@ -211,7 +210,6 @@
   const speedEl   = document.getElementById('speed');
   const autoImeEl = document.getElementById('autoIme');
   const imeCmdEl  = document.getElementById('imeCommand');
-
   function log(msg) {
     const t = new Date().toLocaleTimeString();
     logBox.textContent += `\n[${t}] ${msg}`;
@@ -303,7 +301,7 @@
 
   // ── 傳送一段（pipeline：送完 END 不等 DONE）──
   async function sendSegment(seg, cps, switchIme, imeCmd) {
-    if (!await sendAndAck(`BEGIN ${cps} ${switchIme} ${imeCmd}`)) throw new Error('BEGIN 未收到 ACK');
+    if (!await sendAndAck(`BEGIN ${cps} ${switchIme} ${imeCmd} 0`)) throw new Error('BEGIN 未收到 ACK');
     for (let i = 0; i < seg.length; i += CHUNK_SIZE) {
       if (stopFlag) { await sendLine('STOP'); return false; }
       const encoded = btoa(seg.slice(i, i + CHUNK_SIZE));
@@ -317,8 +315,9 @@
   async function sendTypingJob() {
     if (busy) return;
     if (!isConnected()) throw new Error('請先連線');
-    const text = textInput.value;
-    if (!text.trim()) throw new Error('請先輸入文字');
+    const raw = textInput.value;
+    if (!raw.trim()) throw new Error('請先輸入文字');
+    const text = raw;
     busy = true; stopFlag = false;
     const cps = Number(speedEl.value);
     const switchIme = autoImeEl.checked ? '1' : '0';
@@ -443,10 +442,6 @@
     try { await connectBle(); } catch (e) { logBox.textContent = '連線失敗：' + e.message; setStatus('連線失敗'); }
   });
   document.getElementById('btnDisconnect').addEventListener('click', () => device?.gatt?.disconnect());
-  document.getElementById('btnPing').addEventListener('click', async () => {
-    try { logBox.textContent = await sendAndAck('PING') ? 'PING → OK' : 'PING 無回應'; }
-    catch (e) { logBox.textContent = 'PING 失敗：' + e.message; }
-  });
   document.getElementById('btnSend').addEventListener('click', async () => {
     try { await sendTypingJob(); }
     catch (e) { stopTypingSync(); busy = false; logBox.textContent = '傳送失敗：' + e.message; setStatus('傳送失敗'); }
