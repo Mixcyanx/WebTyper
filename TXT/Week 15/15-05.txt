@@ -1,0 +1,24 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+int K=in.nextInt();
+int Q=in.nextInt();
+int R=in.nextInt();
+String s=in.next();
+char[] now=new char[K+1];
+for(int i=1;i<=K;i++) now[i]=s.charAt(i-1);
+StringBuilder[] ans=new StringBuilder[R+1];
+for(int i=1;i<=R;i++) ans[i]=new StringBuilder();
+for(int q=0;q<Q;q++) {
+char[] next=new char[K+1];
+for(int i=1;i<=K;i++) {
+int p=in.nextInt();
+next[p]=now[i];
+}
+now=next;
+for(int i=1;i<=R;i++) ans[i].append(now[i]);
+}
+for(int i=1;i<=R;i++) System.out.print(ans[i].toString()+"\r\n");
+}
+}

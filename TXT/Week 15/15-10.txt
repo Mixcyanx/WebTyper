@@ -1,0 +1,31 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+int c=1;
+while(true) {
+int N=in.nextInt();
+int Q=in.nextInt();
+if(N==0&&Q==0) break;
+int[] a=new int[N];
+for(int i=0;i<N;i++) a[i]=in.nextInt();
+Arrays.sort(a);
+System.out.print("\r\n");
+System.out.print("CASE# "+c+"\r\n");
+for(int i=0;i<Q;i++) {
+int x=in.nextInt();
+int l=0,r=N-1,ans=-1;
+while(l<=r) {
+int m=(l+r)/2;
+if(a[m]>=x) {
+ans=m;
+r=m-1;
+}else l=m+1;
+}
+if(ans!=-1&&a[ans]==x) System.out.print(x+" found at "+(ans+1)+"\r\n");
+else System.out.print(x+" not found\r\n");
+}
+c++;
+}
+}
+}

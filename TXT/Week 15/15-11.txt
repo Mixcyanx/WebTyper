@@ -1,0 +1,14 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+ArrayList<Integer> a=new ArrayList<Integer>();
+while(in.hasNextInt()) {
+a.add(in.nextInt());
+Collections.sort(a);
+int n=a.size();
+if(n%2==1) System.out.print(a.get(n/2)+"\r\n");
+else System.out.print((a.get(n/2-1)+a.get(n/2))/2+"\r\n");
+}
+}
+}

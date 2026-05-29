@@ -1,0 +1,48 @@
+﻿import java.util.*;
+
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+
+while(in.hasNext()) {
+int k=in.nextInt();
+String s=in.next();
+
+ArrayList<Integer> len=new ArrayList<Integer>();
+
+int cnt=1;
+for(int i=1;i<s.length();i++) {
+if(Character.isUpperCase(s.charAt(i))==Character.isUpperCase(s.charAt(i-1))) {
+cnt++;
+}else {
+len.add(cnt);
+cnt=1;
+}
+}
+len.add(cnt);
+
+int max=0;
+
+for(int i=0;i<len.size();i++) {
+if(len.get(i)>=k) {
+int sum=k;
+max=Math.max(max,sum);
+
+for(int j=i+1;j<len.size();j++) {
+if(j>i+1&&len.get(j-1)!=k) {
+break;
+}
+if(len.get(j)>=k) {
+sum+=k;
+max=Math.max(max,sum);
+}else {
+break;
+}
+}
+}
+}
+
+System.out.println(max);
+}
+}
+}

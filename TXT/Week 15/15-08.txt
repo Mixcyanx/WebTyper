@@ -1,0 +1,21 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+int[] a=new int[100];
+for(int i=0;i<100;i++) a[i]=in.nextInt();
+for(int i=0;i<99;i++) {
+int min=i;
+for(int j=i+1;j<100;j++) {
+if(a[j]<a[min]) min=j;
+}
+int t=a[i];
+a[i]=a[min];
+a[min]=t;
+}
+for(int i=0;i<100;i++) {
+System.out.print(a[i]);
+if(i<100) System.out.print(" ");
+}
+}
+}

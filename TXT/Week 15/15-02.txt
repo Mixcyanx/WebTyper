@@ -1,0 +1,39 @@
+﻿import java.util.*;
+
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+
+int n=in.nextInt();
+int d=in.nextInt();
+int[][] a=new int[n][n];
+
+for(int i=0;i<n;i++) {
+for(int j=0;j<n;j++) {
+a[i][j]=in.nextInt();
+}}
+
+int[] dr={0,-1,0,1};
+int[] dc={-1,0,1,0};
+
+int r=n/2,c=n/2;
+System.out.print(a[r][c]);
+
+int step=1,count=1;
+
+while(count<n*n) {
+for(int t=0;t<2;t++) {
+for(int i=0;i<step&&count<n*n;i++) {
+r+=dr[d];
+c+=dc[d];
+System.out.print(a[r][c]);
+count++;
+}
+
+d=(d+1)%4;
+}
+step++;
+}
+System.out.print("\r\n");
+}
+}

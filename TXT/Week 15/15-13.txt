@@ -1,0 +1,21 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+int x;
+int result;
+int DATA[]=new int[10];
+for(int i=0;i<10;i++) DATA[i]=in.nextInt();
+int size=DATA.length;
+x=in.nextInt();
+result = BinarySearch(DATA, x, 0, size-1);
+System.out.println("The searched element "+x+" is at "+result);
+}
+public static int BinarySearch(int DATA[],int x,int left,int right) {
+if(left>right) return -1;
+int mid=(left+right)/2;
+if(DATA[mid]==x) return mid;
+if(DATA[mid]>x) return BinarySearch(DATA,x,left,mid-1);
+return BinarySearch(DATA,x,mid+1,right);
+}
+}

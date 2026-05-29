@@ -1,0 +1,12 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner in=new Scanner(System.in);
+int[] a=new int[20];
+for(int i=0;i<20;i++) a[i]=in.nextInt();
+Arrays.sort(a);
+System.out.print("Max:"+a[19]+"\r\n");
+System.out.print("Min:"+a[0]+"\r\n");
+System.out.print("Middle:"+a[9]+"\r\n");
+}
+}

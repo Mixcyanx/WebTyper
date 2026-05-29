@@ -1,0 +1,28 @@
+﻿import java.util.*;
+public class main {
+public static void main(String[] args) {
+Scanner sc=new Scanner(System.in);
+int num;
+while(sc.hasNext() && (num=sc.nextInt())!=0) {
+String st=toBinaryString(num);
+int count=0;
+count = toCountOne(st);
+System.out.println("The parity of "+st+" is "+count+" (mod 2).");
+}
+}
+public static String toBinaryString(int num) {
+String s="";
+while(num>0) {
+s=num%2+s;
+num=num/2;
+}
+return s;
+}
+public static int toCountOne(String st) {
+int c=0;
+for(int i=0;i<st.length();i++) {
+if(st.charAt(i)=='1') c++;
+}
+return c;
+}
+}
