@@ -1,200 +1,48 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>nRF52840 BLE 打字傳輸器</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Mixcyanx/WebTyper/main/WebTyper.png" />
-  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Mixcyanx/WebTyper/main/WebTyper.png" />
-  <meta name="theme-color" content="#0f172a" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="BLE Typer" />
-  <style>
-    :root { --line: #334155; --text: #e5e7eb; --muted: #94a3b8; --danger: #ef4444; }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; font-family: Arial, "Noto Sans TC", sans-serif;
-      background: linear-gradient(135deg, #020617, #0f172a 45%, #111827);
-      color: var(--text); min-height: 100vh; padding: 18px;
-    }
-    .wrap { max-width: 980px; margin: 0 auto; display: grid; gap: 16px; }
-    .card {
-      background: rgba(17,24,39,0.92); border: 1px solid rgba(148,163,184,0.18);
-      border-radius: 18px; padding: 16px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.28); backdrop-filter: blur(10px);
-    }
-    h1 { font-size: 24px; margin: 0 0 4px; }
-    .ver { color: #475569; font-size: 12px; margin-bottom: 8px; }
-    .sub { color: var(--muted); font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
-    .grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
-    .full { grid-column: 1 / -1; }
-    label { display: block; font-size: 14px; color: #cbd5e1; margin-bottom: 6px; }
-    input[type="file"], input[type="text"], select, textarea {
-      width: 100%; padding: 12px; border-radius: 12px;
-      border: 1px solid var(--line); background: #0b1220;
-      color: var(--text); font-size: 15px; outline: none;
-    }
-    textarea { min-height: 200px; resize: vertical; line-height: 1.6; white-space: pre-wrap; }
-    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-    button {
-      border: 0; border-radius: 12px; padding: 12px 16px;
-      font-size: 15px; font-weight: 700; cursor: pointer; color: white; background: #2563eb;
-    }
-    button.good { background: #16a34a; }
-    button.warn { background: #ea580c; }
-    button.purple { background: #7c3aed; }
-    button.danger { background: var(--danger); }
-    button.secondary { background: #0ea5e9; }
-    button.sm { padding: 8px 12px; font-size: 13px; }
-    button:disabled { opacity: 0.55; cursor: not-allowed; }
-    .status {
-      padding: 10px 12px; border-radius: 12px;
-      background: #0b1220; border: 1px solid var(--line); color: #bfdbfe; font-size: 14px;
-    }
-    .mono { font-family: Consolas, Menlo, monospace; font-size: 13px; }
-    .hint { color: var(--muted); font-size: 13px; line-height: 1.6; }
-    .checkbox {
-      display: flex; gap: 10px; align-items: center;
-      min-height: 48px; padding: 12px; border-radius: 12px;
-      border: 1px solid var(--line); background: #0b1220;
-    }
-    .checkbox input { transform: scale(1.2); }
-    pre { margin: 0; white-space: pre-wrap; word-break: break-word; line-height: 1.55; }
-
-    /* TXT 庫存區 */
-    .gh-row { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
-    .gh-row input { flex: 1; }
-    .file-list { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; }
-    .file-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 8px 12px; border-radius: 10px; background: #0b1220;
-      border: 1px solid var(--line); cursor: pointer; transition: border-color 0.2s;
-    }
-    .file-item:hover { border-color: #38bdf8; }
-    .file-item .fname { font-size: 14px; color: #e2e8f0; }
-    .file-item .fsize { font-size: 12px; color: var(--muted); }
-    .folder-item {
-      display: flex; align-items: center; gap: 8px;
-      padding: 8px 12px; border-radius: 10px; background: #0b1220;
-      border: 1px solid var(--line); cursor: pointer; transition: border-color 0.2s;
-      font-size: 14px; color: #fbbf24;
-    }
-    .folder-item:hover { border-color: #fbbf24; }
-    .breadcrumb { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
-    .breadcrumb span { cursor: pointer; color: #38bdf8; }
-    .breadcrumb span:hover { text-decoration: underline; }
-    .empty-hint { color: var(--muted); font-size: 13px; text-align: center; padding: 20px; }
-
-    @media (max-width: 760px) {
-      .grid { grid-template-columns: 1fr; }
-      body { padding: 12px; }
-      h1 { font-size: 21px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#234d40">
+<title>WebTyper — 文字傳輸工作台</title>
+<style>
+:root{--bg:#f3f3ed;--paper:#fffefa;--ink:#252f29;--muted:#788078;--line:#dfe3d9;--green:#234d40;--soft:#e9efe6;--orange:#b16b3e;--mono:Consolas,"SFMono-Regular",monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;font-size:14px;line-height:1.6}button,input,select,textarea{font:inherit}button{cursor:pointer}button,input,select,textarea{outline-offset:4px}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--green)}button{transition:background .18s,transform .18s}button:active{transform:translateY(1px)}button:disabled{opacity:.45;cursor:not-allowed}header{border-bottom:1px solid var(--line);background:var(--paper)}.topbar{max-width:1320px;margin:auto;min-height:86px;padding:0 36px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:12px}.brandmark{width:38px;height:38px;background:var(--green);color:#fff;border-radius:10px;display:grid;place-items:center;font-family:var(--mono);font-size:21px}.brandname{font-weight:750;font-size:23px;letter-spacing:-1px}.brandname span{color:var(--muted);font-size:12px;font-weight:400;letter-spacing:.06em;margin-left:17px}.header-note{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted)}.header-note i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#8b9b83;margin-right:8px}main{max-width:1320px;margin:auto;padding:40px 36px 24px}.intro{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:28px}.eyebrow{font:11px var(--mono);letter-spacing:.16em;color:var(--muted);margin-bottom:9px}h1{font-size:30px;letter-spacing:-1px;font-weight:650;margin:0 0 8px}p{margin:0;color:var(--muted)}.route{display:flex;align-items:center;gap:10px;font:11px var(--mono);color:var(--muted);padding-bottom:6px;white-space:nowrap}.route b{font-weight:400;color:var(--green)}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:22px;align-items:start}.main-column,.sidebar{display:grid;gap:20px;min-width:0}.panel{background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden}.panel-heading{padding:20px 22px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line)}h2{margin:0;font-size:15px;font-weight:650}.section-number{font:11px var(--mono);color:#98a08f;margin-right:9px}.badge{font:10px var(--mono);letter-spacing:.06em;border:1px solid var(--line);border-radius:5px;padding:4px 7px;color:var(--muted)}.editor-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 22px;background:#fafbf6;border-bottom:1px solid var(--line)}.file-tab{font:12px var(--mono);color:#697863}.file-tab::before{content:'≡';margin-right:9px}.tool-actions{display:flex;gap:15px}.text-btn{padding:2px 0;background:none;border:0;color:var(--muted);font-size:12px}.text-btn:hover{color:var(--green)}.editor-wrap{position:relative;padding:20px 22px 10px 48px}.editor-wrap::before{content:'01';position:absolute;left:19px;top:24px;font:11px var(--mono);color:#adb4a6}textarea{display:block;width:100%;min-height:345px;border:0;background:transparent;resize:vertical;color:var(--ink);font:14px/1.9 var(--mono);padding:0 8px}textarea::placeholder{color:#9aa194;font-family:inherit}textarea:focus-visible{outline:0}.editor-wrap:focus-within{box-shadow:inset 3px 0 var(--green)}.editor-meta{display:flex;justify-content:space-between;gap:10px;padding:12px 22px;color:var(--muted);font-size:11px}.counter{font-family:var(--mono)}.sendbar{display:flex;align-items:center;justify-content:space-between;gap:15px;border-top:1px solid var(--line);padding:18px 22px}.send-hint{font-size:11px;color:var(--muted)}.actions{display:flex;gap:9px}.btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:7px;padding:10px 15px;font-size:12px;font-weight:600}.btn:hover{background:var(--soft)}.btn-primary{background:var(--green);color:white;border-color:var(--green)}.btn-primary:hover{background:#326451}.btn-stop{color:#9b654b;background:#fbf7f1;border-color:#e9ddd1}.btn-wide{width:100%}.arrow{margin-left:22px}.panel-body{padding:20px 22px}.connection-state{display:flex;align-items:center;gap:10px;margin-bottom:8px}.dot{width:8px;height:8px;background:#a2ab9d;border-radius:50%;flex-shrink:0}.status{font-size:13px;font-weight:600;overflow-wrap:anywhere}.connection-description{font-size:12px;line-height:1.8;margin-bottom:17px}.connection-buttons{display:grid;grid-template-columns:1fr auto;gap:8px}.hint{font-size:11px;color:var(--muted);line-height:1.8}.divider{height:1px;background:var(--line);margin:18px 0}.field{margin-bottom:16px}label{display:block;font-size:12px;color:#606b61;margin-bottom:7px}input[type=text],select{width:100%;min-width:0;border:1px solid var(--line);border-radius:7px;background:#fafbf7;padding:9px 10px;color:var(--ink);font-size:12px}select{cursor:pointer}.checkbox{display:flex;align-items:start;gap:9px;margin-top:6px;font-size:12px;color:#65715f}.checkbox input{accent-color:var(--green);margin:4px 0 0}.checkbox label{margin:0;cursor:pointer}.settings-note{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}.library-top{display:grid;grid-template-columns:1.5fr 1fr auto;gap:10px;align-items:end}.library-top .field{margin:0}.library-top button{height:39px}.breadcrumb{font-size:12px;color:var(--muted);margin:18px 0 10px}.breadcrumb span{cursor:pointer;color:var(--green)}.file-list{display:flex;flex-direction:column;gap:6px;max-height:236px;overflow:auto}.file-item,.folder-item{padding:10px 12px;border:1px solid var(--line);border-radius:7px;display:flex;align-items:center;gap:9px;font-size:12px;background:#fafbf7;cursor:pointer}.file-item{justify-content:space-between}.file-item:hover,.folder-item:hover{background:var(--soft);border-color:#bac8b3}.fname{overflow-wrap:anywhere}.fsize{color:var(--muted);font:10px var(--mono);white-space:nowrap}.empty-hint{text-align:center;padding:26px 10px;color:var(--muted);font-size:12px}.upload{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#f8faf3;border:1px dashed #cbd4c3;border-radius:8px;padding:13px 14px;margin-top:18px}.upload label{margin:0;font-size:12px;font-weight:600;color:var(--green)}input[type=file]{width:180px;max-width:100%;font-size:10px;color:var(--muted)}input::file-selector-button{border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink);padding:5px 8px;margin-right:8px;cursor:pointer}.log-panel{background:#edf0e8}.log-panel .panel-heading{border:0;padding-bottom:10px}.log-body{padding:0 22px 20px;max-height:175px;overflow:auto}pre{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font:11px/1.8 var(--mono);color:#74816c}.footer{display:flex;justify-content:space-between;padding:26px 0 0;color:#949c8e;font:10px var(--mono);letter-spacing:.04em}.mobile-only{display:none}
+@media(min-width:1500px){main{padding-top:54px}}
+@media(max-width:920px){.workspace{grid-template-columns:minmax(0,1fr) 280px;gap:16px}.topbar{padding:0 24px}main{padding:28px 24px}.route{display:none}.sendbar{align-items:start;flex-direction:column}.actions{width:100%}.actions .btn-primary{flex:1}.brandname span{display:none}}
+@media(max-width:680px){.topbar{min-height:70px;padding:0 18px}.header-note{font-size:9px}.brandname{font-size:21px}main{padding:26px 16px 20px}.intro{margin-bottom:22px}h1{font-size:26px}.intro p{font-size:12px}.workspace{display:flex;flex-direction:column}.main-column,.sidebar{display:contents}.panel{width:100%}.connection-panel{order:0}.editor-panel{order:1}.settings-panel{order:2}.library-panel{order:3}.log-panel{order:4}.panel-heading{padding:17px 18px}.panel-body{padding:18px}.editor-tools{padding:12px 18px}.editor-wrap{padding-left:40px}.editor-wrap::before{left:15px}textarea{min-height:270px;font-size:13px}.sendbar{padding:16px 18px}.editor-meta{padding:12px 18px}.library-top{grid-template-columns:1fr 85px}.library-top .field:first-child{grid-column:1/-1}.upload{flex-direction:column;align-items:start}.upload input{width:100%}.footer{gap:12px;font-size:9px}.footer span:last-child{text-align:right}.editor-meta span:first-child{max-width:70%}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
 </head>
 <body>
-<div class="wrap">
-
-  <!-- 標題 -->
-  <div class="card">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-      <img src="https://raw.githubusercontent.com/Mixcyanx/WebTyper/main/WebTyper.png" style="width:48px;height:48px;border-radius:10px;" />
-      <div>
-        <h1>nRF52840 BLE 打字傳輸器</h1>
-        <div class="ver">v3 — 中文、英文與 Emoji 完整貼上</div>
-      </div>
-    </div>
-    <div class="sub">Android Chrome 透過 Web Bluetooth 連線到 nRF52840，將文字經由 BLE 傳給開發板，再由開發板透過 USB 傳給電腦接收程式，貼入目前輸入框。ios裝置得下載支援BLE的瀏覽器，如:Bluefy。</div>
-    <div class="status" id="status">尚未連線</div>
-  </div>
-
-  <!-- 藍牙控制 -->
-  <div class="card">
-    <div class="row">
-      <button id="btnConnect" class="good">連接藍牙</button>
-      <button id="btnDisconnect" class="danger">中斷連線</button>
-    </div>
-    <div class="hint" style="margin-top:10px;">需要 <b>HTTPS</b> 或 localhost，以 Android Chrome 開啟。</div>
-  </div>
-
-  <!-- GitHub TXT 庫存區 -->
-  <div class="card">
-    <label>GitHub TXT 庫存</label>
-    <div class="gh-row">
-      <input id="ghRepo" type="text" placeholder="owner/repo" value="Mixcyanx/WebTyper" />
-      <input id="ghPath" type="text" placeholder="資料夾路徑" value="TXT" style="flex:1" />
-      <button id="btnGhSync" class="secondary sm">同步</button>
-    </div>
-    <div class="breadcrumb" id="breadcrumb"></div>
-    <div class="file-list" id="fileList"><div class="empty-hint">按「同步」載入檔案列表</div></div>
-  </div>
-
-  <!-- 傳送設定 -->
-  <div class="card">
-    <div class="grid">
-      <div>
-        <label for="fileInput">上傳 TXT 檔</label>
-        <input id="fileInput" type="file" accept=".txt,text/plain" />
-      </div>
-      <div>
-        <label for="speed">完整文字貼上（不需設定速度）</label>
-        <select id="speed" disabled>
-          <option value="5">很慢（5 字/秒）</option>
-          <option value="10">慢（10 字/秒）</option>
-          <option value="20">中（20 字/秒）</option>
-          <option value="35">快（35 字/秒）</option>
-          <option value="60">很快（60 字/秒）</option>
-          <option value="100">極快（100 字/秒）</option>
-          <option value="150">超快（150 字/秒）</option>
-          <option value="200" selected>最快（200 字/秒）</option>
-        </select>
-      </div>
-      <div>
-        <label for="imeCommand">切換輸入法命令</label>
-        <select id="imeCommand" disabled>
-          <option value="">不切換</option>
-          <option value="WIN_SPACE">Windows + Space</option>
-          <option value="CTRL_SPACE">Ctrl + Space</option>
-          <option value="SHIFT_SPACE">Shift + Space</option>
-          <option value="ALT_SHIFT">Alt + Shift</option>
-        </select>
-      </div>
-      <div>
-        <label>&nbsp;</label>
-        <div class="checkbox">
-          <input id="autoIme" type="checkbox" disabled />
-          <span>貼上不需切換輸入法</span>
-        </div>
-      </div>
-      <div class="full">
-        <label for="textInput">文字輸入區</label>
-        <textarea id="textInput" placeholder="請貼上要傳給 nRF52840 的文字，或從上方庫存點選載入。"></textarea>
-      </div>
-    </div>
-    <div class="row" style="margin-top:12px;">
-      <button id="btnPaste" class="purple">貼上文字</button>
-      <button id="btnClear">清空文字</button>
-      <button id="btnSend" class="good">傳送到開發板</button>
-      <button id="btnStop" class="warn">停止打字</button>
-    </div>
-  </div>
-
-  <!-- 記錄 -->
-  <div class="card">
-    <label>記錄</label>
-    <div class="status mono"><pre id="logBox">等待操作...</pre></div>
-  </div>
-
+<header><div class="topbar"><div class="brand"><div class="brandmark" aria-hidden="true">w_</div><div class="brandname">WebTyper<span>文字傳輸工作台</span></div></div><div class="header-note"><i></i>LESS TYPING. MORE FLOW.</div></div></header>
+<main>
+<div class="intro"><div><div class="eyebrow">YOUR WIRELESS WRITING DESK</div><h1>準備好文字，讓它接著輸入。</h1><p>從這裡整理、傳送，在另一台電腦接續你的工作。</p></div><div class="route"><b>WEB</b><span>── BLE ──</span><b>nRF52840</b><span>── USB ──</span><b>PC</b></div></div>
+<div class="workspace">
+<div class="main-column">
+<section class="panel editor-panel" aria-labelledby="editorTitle">
+<div class="panel-heading"><h2 id="editorTitle"><span class="section-number">01</span>文字工作區</h2><span class="badge">PLAIN TEXT</span></div>
+<div class="editor-tools"><span class="file-tab">untitled.txt</span><div class="tool-actions"><button class="text-btn" id="btnPaste">貼上文字</button><button class="text-btn" id="btnClear">清空</button></div></div>
+<div class="editor-wrap"><textarea id="textInput" aria-label="要傳送的文字" spellcheck="false" placeholder="從這裡開始。&#10;&#10;貼上要輸入的英文、程式碼或指令，&#10;也可以從下方文字庫載入檔案。"></textarea></div>
+<div class="editor-meta"><span>原版 HID 模式 · 支援英文與 ASCII 符號</span><span class="counter" id="textCount">0 字元 · 1 行</span></div>
+<div class="sendbar"><span class="send-hint">傳送前，請將電腦游標放到目標輸入框。</span><div class="actions"><button id="btnStop" class="btn btn-stop">停止</button><button id="btnSend" class="btn btn-primary">開始傳送<span class="arrow" aria-hidden="true">↗</span></button></div></div>
+</section>
+<section class="panel library-panel" aria-labelledby="libraryTitle"><div class="panel-heading"><h2 id="libraryTitle"><span class="section-number">02</span>文字庫</h2><span class="badge">GITHUB / LOCAL</span></div><div class="panel-body"><div class="library-top"><div class="field"><label for="ghRepo">GitHub 儲存庫</label><input id="ghRepo" type="text" value="Mixcyanx/WebTyper" placeholder="owner/repo"></div><div class="field"><label for="ghPath">資料夾</label><input id="ghPath" type="text" value="TXT" placeholder="TXT"></div><button id="btnGhSync" class="btn">同步</button></div><div class="breadcrumb" id="breadcrumb"></div><div class="file-list" id="fileList"><div class="empty-hint">同步文字庫，或選擇本機檔案。</div></div><div class="upload"><div><label for="fileInput">從電腦載入</label><span class="hint">選擇一份 .txt，放進文字工作區。</span></div><input id="fileInput" type="file" accept=".txt,text/plain"></div></div></section>
 </div>
-
+<aside class="sidebar">
+<section class="panel connection-panel" aria-labelledby="connectionTitle"><div class="panel-heading"><h2 id="connectionTitle">裝置連線</h2><span class="badge">BLUETOOTH</span></div><div class="panel-body"><div class="connection-state"><span class="dot" aria-hidden="true"></span><div id="status" class="status" role="status" aria-live="polite">尚未連線</div></div><p class="connection-description">將開發板接上目標電腦的 USB，<br>再從這裡建立藍牙連線。</p><div class="connection-buttons"><button id="btnConnect" class="btn btn-primary">連接裝置</button><button id="btnDisconnect" class="btn">中斷</button></div><div class="divider"></div><p class="hint">請以支援 Web Bluetooth 的瀏覽器開啟，並使用 HTTPS 或 localhost。</p></div></section>
+<section class="panel settings-panel" aria-labelledby="settingsTitle"><div class="panel-heading"><h2 id="settingsTitle">傳送設定</h2><span class="badge">USB HID</span></div><div class="panel-body"><div class="field"><label for="speed">輸入速度</label><select id="speed"><option value="5">很慢 · 5 字 / 秒</option><option value="10">慢 · 10 字 / 秒</option><option value="20">適中 · 20 字 / 秒</option><option value="35">快 · 35 字 / 秒</option><option value="60">很快 · 60 字 / 秒</option><option value="100">極快 · 100 字 / 秒</option><option value="150">超快 · 150 字 / 秒</option><option value="200" selected>最快 · 200 字 / 秒</option></select></div><div class="field"><label for="imeCommand">輸入法切換快捷鍵</label><select id="imeCommand"><option value="">不切換</option><option value="WIN_SPACE">Windows + Space</option><option value="CTRL_SPACE">Ctrl + Space</option><option value="SHIFT_SPACE">Shift + Space</option><option value="ALT_SHIFT">Alt + Shift</option></select></div><div class="checkbox"><input id="autoIme" type="checkbox"><label for="autoIme">傳送前自動切換輸入法</label></div><p class="hint settings-note">沿用原版鍵盤輸入方式。請使用英文輸入模式；中文與 Emoji 不支援。</p></div></section>
+<section class="panel log-panel" aria-labelledby="logTitle"><div class="panel-heading"><h2 id="logTitle">活動記錄</h2><span class="badge">LOG</span></div><div class="log-body"><pre id="logBox" role="log">等待操作...</pre></div></section>
+</aside></div>
+<footer class="footer"><span>WEBTYPER / A LITTLE TOOL FOR YOUR FLOW</span><span>BLE IN. KEYSTROKES OUT.</span></footer>
+</main>
 <script>
   // ── NUS UUIDs ──
   const NUS_SERVICE = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
   const NUS_RX      = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
   const NUS_TX      = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
 
-  const ACK_TIMEOUT = 12000;
+  const ACK_TIMEOUT = 1000;
   const CHUNK_SIZE  = 18;  // 字元數 → base64 24B，減少來回次數
   const SEG_SIZE    = 1000; // 每段字元數，夠大讓 pipeline 有效
 
@@ -242,34 +90,41 @@
     typingInterval = null;
   }
 
-  // Commands are acknowledged only after the desktop receiver accepts them.
-  let notifyBuffer = '';
-  let ackReject = null;
+  // ── BLE 傳送 ──
   async function sendLine(line) {
-    await rxChar.writeValueWithResponse(enc.encode(line + '\n'));
+    const data = enc.encode(line + '\n');
+    log(`TX → ${line}`);
+    try { await rxChar.writeValue(data); }
+    catch { await rxChar.writeValueWithoutResponse(data); }
   }
-  function cancelAck(error) { ackReject?.(error); }
-  function sendAndAck(line) {
-    return new Promise((resolve, reject) => {
-      const timer = setTimeout(() => finish(new Error('電腦接收程式未回應，請檢查 USB 連線')), ACK_TIMEOUT);
-      function finish(error) {
-        clearTimeout(timer); ackResolve = null; ackReject = null;
-        error ? reject(error) : resolve();
-      }
-      ackResolve = ok => finish(ok ? null : new Error('接收失敗，請查看電腦接收程式'));
-      ackReject = finish;
-      sendLine(line).catch(finish);
+
+  function waitAck() {
+    return new Promise(resolve => {
+      const t = setTimeout(() => { ackResolve = null; log('⚠ ACK timeout'); resolve(false); }, ACK_TIMEOUT);
+      ackResolve = ok => { clearTimeout(t); ackResolve = null; resolve(ok); };
     });
   }
+
+  async function sendAndAck(line) { const p = waitAck(); await sendLine(line); return p; }
+
+  function waitDone() {
+    return new Promise(resolve => {
+      const t = setTimeout(() => { doneResolve = null; resolve(); }, 60000);
+      doneResolve = () => { clearTimeout(t); doneResolve = null; resolve(); };
+    });
+  }
+
   function onNotify(event) {
-    notifyBuffer += dec.decode(event.target.value, {stream: true});
-    let end;
-    while ((end = notifyBuffer.indexOf('\n')) >= 0) {
-      const line = notifyBuffer.slice(0, end).trim();
-      notifyBuffer = notifyBuffer.slice(end + 1);
-      if (line === 'OK') ackResolve?.(true);
-      if (line === 'ERR') ackResolve?.(false);
+    const text = dec.decode(new Uint8Array(event.target.value.buffer)).trim();
+    if (text === 'READY') return;
+    if (text === 'DONE') {
+      stopTypingSync();
+      logBox.textContent = '傳送完成';
+      logBox.parentElement.scrollTop = logBox.parentElement.scrollHeight;
+      doneResolve?.(); return;
     }
+    if (text === 'OK')  ackResolve?.(true);
+    if (text === 'ERR') ackResolve?.(false);
   }
 
   // ── 連線 ──
@@ -280,7 +135,7 @@
       filters: [{ services: [NUS_SERVICE] }], optionalServices: [NUS_SERVICE]
     });
     device.addEventListener('gattserverdisconnected', () => {
-      cancelAck(new Error('藍牙已中斷')); notifyBuffer = ''; setStatus('已中斷'); rxChar = txChar = null;
+      setStatus('已中斷'); log('藍牙已中斷'); rxChar = txChar = null;
     });
     const server  = await device.gatt.connect();
     const service = await server.getPrimaryService(NUS_SERVICE);
@@ -292,31 +147,44 @@
     logBox.textContent = '連線成功';
   }
 
+  // ── 傳送一段（pipeline：送完 END 不等 DONE）──
+  async function sendSegment(seg, cps, switchIme, imeCmd) {
+    if (!await sendAndAck(`BEGIN ${cps} ${switchIme} ${imeCmd} 0`)) throw new Error('BEGIN 未收到 ACK');
+    for (let i = 0; i < seg.length; i += CHUNK_SIZE) {
+      if (stopFlag) { await sendLine('STOP'); return false; }
+      const encoded = btoa(seg.slice(i, i + CHUNK_SIZE));
+      if (!await sendAndAck(`DATA ${encoded}`)) throw new Error('DATA 未收到 ACK');
+    }
+    if (!await sendAndAck('END')) throw new Error('END 未收到 ACK');
+    return true;
+  }
+
+  // ── 傳送全部 ──
   async function sendTypingJob() {
     if (busy) return;
     if (!isConnected()) throw new Error('請先連線');
-    const bytes = enc.encode(textInput.value);
-    if (!bytes.length) throw new Error('請先輸入文字');
-    if (bytes.length > 16 * 1024 * 1024) throw new Error('文字超過 16 MB');
-    if (textInput.value.includes('\0')) throw new Error('剪貼簿不支援 NUL 字元');
+    const raw = textInput.value;
+    if (!raw.trim()) throw new Error('請先輸入文字');
+    const text = raw;
     busy = true; stopFlag = false;
-    try {
-      await sendAndAck(`BEGIN ${bytes.length}`);
-      for (let i = 0; i < bytes.length; i += 9) {
-        if (stopFlag) throw new Error('已停止');
-        // Encode bytes, never UTF-16 strings. Each BLE command fits 20 bytes.
-        const encoded = btoa(String.fromCharCode(...bytes.subarray(i, i + 9)));
-        await sendAndAck(`DATA ${encoded}`);
-        setStatus(`傳送中 ${Math.min(i + 9, bytes.length)}/${bytes.length} bytes`);
-      }
-      if (stopFlag) throw new Error('已停止');
-      setStatus('等待電腦貼上…');
-      await sendAndAck('END');
-      setStatus('已送出貼上'); logBox.textContent = '電腦已執行貼上，請確認目標輸入框。';
-    } catch (error) {
-      if (isConnected()) { try { await sendLine('STOP'); } catch {} }
-      throw error;
-    } finally { busy = false; }
+    const cps = Number(speedEl.value);
+    const switchIme = autoImeEl.checked ? '1' : '0';
+    const imeCmd = imeCmdEl.value || 'NONE';
+    const total = text.length;
+    let sent = 0;
+    logBox.textContent = `傳送「」`;
+    for (let i = 0; i < total; i += SEG_SIZE) {
+      if (stopFlag) break;
+      const seg = text.slice(i, i + SEG_SIZE);
+      setStatus(`傳送中 ${sent}/${total}`);
+      const segIme = (i === 0) ? switchIme : '0';
+      await sendSegment(seg, cps, segIme, imeCmd);
+      sent += seg.length;
+    }
+    // 所有資料傳完，開發板開始打字，此時才開始同步顯示
+    startTypingSync(text, cps);
+    await waitDone();
+    setStatus('完成'); busy = false;
   }
 
   // ── GitHub TXT 庫存 ──
@@ -426,9 +294,9 @@
     try { await sendTypingJob(); }
     catch (e) { stopTypingSync(); busy = false; logBox.textContent = '傳送失敗：' + e.message; setStatus('傳送失敗'); }
   });
-  document.getElementById('btnStop').addEventListener('click', () => {
-    stopFlag = true;
-    logBox.textContent = '正在停止；已執行的貼上無法撤回。';
+  document.getElementById('btnStop').addEventListener('click', async () => {
+    stopFlag = true; stopTypingSync();
+    try { await sendLine('STOP'); logBox.textContent = '已停止'; } catch (e) { logBox.textContent = 'STOP 失敗：' + e.message; }
   });
   document.getElementById('btnPaste').addEventListener('click', async () => {
     try {
@@ -447,6 +315,15 @@
     logBox.textContent = '頁面已就緒';
     document.getElementById('btnGhSync').click();
   });
+</script>
+<script>
+  // Presentation only: leave the original BLE/HID protocol unchanged.
+  const updateCount = () => {
+    const value = document.getElementById('textInput').value;
+    document.getElementById('textCount').textContent = `${Array.from(value).length.toLocaleString()} 字元 · ${value.split('\n').length.toLocaleString()} 行`;
+  };
+  document.getElementById('textInput').addEventListener('input', updateCount);
+  new MutationObserver(updateCount).observe(document.getElementById('logBox'), {childList:true, subtree:true, characterData:true});
 </script>
 </body>
 </html>
