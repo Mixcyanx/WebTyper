@@ -102,10 +102,10 @@
       <img src="https://raw.githubusercontent.com/Mixcyanx/WebTyper/main/WebTyper.png" style="width:48px;height:48px;border-radius:10px;" />
       <div>
         <h1>nRF52840 BLE 打字傳輸器</h1>
-        <div class="ver">v2.3.1 — IDE 模式對齊編輯器自動縮排，輸出與輸入一致</div>
+        <div class="ver">v3 — 中文、英文與 Emoji 完整貼上</div>
       </div>
     </div>
-    <div class="sub">Android Chrome 透過 Web Bluetooth 連線到 nRF52840，將文字經由 BLE 傳給開發板，再由開發板用 USB HID Keyboard 打字到電腦。ios裝置得下載支援BLE的瀏覽器，如:Bluefy。</div>
+    <div class="sub">Android Chrome 透過 Web Bluetooth 連線到 nRF52840，將文字經由 BLE 傳給開發板，再由開發板透過 USB 傳給電腦接收程式，貼入目前輸入框。ios裝置得下載支援BLE的瀏覽器，如:Bluefy。</div>
     <div class="status" id="status">尚未連線</div>
   </div>
 
@@ -138,8 +138,8 @@
         <input id="fileInput" type="file" accept=".txt,text/plain" />
       </div>
       <div>
-        <label for="speed">打字速度</label>
-        <select id="speed">
+        <label for="speed">完整文字貼上（不需設定速度）</label>
+        <select id="speed" disabled>
           <option value="5">很慢（5 字/秒）</option>
           <option value="10">慢（10 字/秒）</option>
           <option value="20">中（20 字/秒）</option>
@@ -152,7 +152,7 @@
       </div>
       <div>
         <label for="imeCommand">切換輸入法命令</label>
-        <select id="imeCommand">
+        <select id="imeCommand" disabled>
           <option value="">不切換</option>
           <option value="WIN_SPACE">Windows + Space</option>
           <option value="CTRL_SPACE">Ctrl + Space</option>
@@ -163,8 +163,8 @@
       <div>
         <label>&nbsp;</label>
         <div class="checkbox">
-          <input id="autoIme" type="checkbox" />
-          <span>打字前先自動切換輸入法</span>
+          <input id="autoIme" type="checkbox" disabled />
+          <span>貼上不需切換輸入法</span>
         </div>
       </div>
       <div class="full">
@@ -194,7 +194,7 @@
   const NUS_RX      = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
   const NUS_TX      = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
 
-  const ACK_TIMEOUT = 1000;
+  const ACK_TIMEOUT = 12000;
   const CHUNK_SIZE  = 18;  // 字元數 → base64 24B，減少來回次數
   const SEG_SIZE    = 1000; // 每段字元數，夠大讓 pipeline 有效
 
@@ -242,41 +242,34 @@
     typingInterval = null;
   }
 
-  // ── BLE 傳送 ──
+  // Commands are acknowledged only after the desktop receiver accepts them.
+  let notifyBuffer = '';
+  let ackReject = null;
   async function sendLine(line) {
-    const data = enc.encode(line + '\n');
-    log(`TX → ${line}`);
-    try { await rxChar.writeValue(data); }
-    catch { await rxChar.writeValueWithoutResponse(data); }
+    await rxChar.writeValueWithResponse(enc.encode(line + '\n'));
   }
-
-  function waitAck() {
-    return new Promise(resolve => {
-      const t = setTimeout(() => { ackResolve = null; log('⚠ ACK timeout'); resolve(false); }, ACK_TIMEOUT);
-      ackResolve = ok => { clearTimeout(t); ackResolve = null; resolve(ok); };
+  function cancelAck(error) { ackReject?.(error); }
+  function sendAndAck(line) {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => finish(new Error('電腦接收程式未回應，請檢查 USB 連線')), ACK_TIMEOUT);
+      function finish(error) {
+        clearTimeout(timer); ackResolve = null; ackReject = null;
+        error ? reject(error) : resolve();
+      }
+      ackResolve = ok => finish(ok ? null : new Error('接收失敗，請查看電腦接收程式'));
+      ackReject = finish;
+      sendLine(line).catch(finish);
     });
   }
-
-  async function sendAndAck(line) { const p = waitAck(); await sendLine(line); return p; }
-
-  function waitDone() {
-    return new Promise(resolve => {
-      const t = setTimeout(() => { doneResolve = null; resolve(); }, 60000);
-      doneResolve = () => { clearTimeout(t); doneResolve = null; resolve(); };
-    });
-  }
-
   function onNotify(event) {
-    const text = dec.decode(new Uint8Array(event.target.value.buffer)).trim();
-    if (text === 'READY') return;
-    if (text === 'DONE') {
-      stopTypingSync();
-      logBox.textContent = '傳送完成';
-      logBox.parentElement.scrollTop = logBox.parentElement.scrollHeight;
-      doneResolve?.(); return;
+    notifyBuffer += dec.decode(event.target.value, {stream: true});
+    let end;
+    while ((end = notifyBuffer.indexOf('\n')) >= 0) {
+      const line = notifyBuffer.slice(0, end).trim();
+      notifyBuffer = notifyBuffer.slice(end + 1);
+      if (line === 'OK') ackResolve?.(true);
+      if (line === 'ERR') ackResolve?.(false);
     }
-    if (text === 'OK')  ackResolve?.(true);
-    if (text === 'ERR') ackResolve?.(false);
   }
 
   // ── 連線 ──
@@ -287,7 +280,7 @@
       filters: [{ services: [NUS_SERVICE] }], optionalServices: [NUS_SERVICE]
     });
     device.addEventListener('gattserverdisconnected', () => {
-      setStatus('已中斷'); log('藍牙已中斷'); rxChar = txChar = null;
+      cancelAck(new Error('藍牙已中斷')); notifyBuffer = ''; setStatus('已中斷'); rxChar = txChar = null;
     });
     const server  = await device.gatt.connect();
     const service = await server.getPrimaryService(NUS_SERVICE);
@@ -299,44 +292,31 @@
     logBox.textContent = '連線成功';
   }
 
-  // ── 傳送一段（pipeline：送完 END 不等 DONE）──
-  async function sendSegment(seg, cps, switchIme, imeCmd) {
-    if (!await sendAndAck(`BEGIN ${cps} ${switchIme} ${imeCmd} 0`)) throw new Error('BEGIN 未收到 ACK');
-    for (let i = 0; i < seg.length; i += CHUNK_SIZE) {
-      if (stopFlag) { await sendLine('STOP'); return false; }
-      const encoded = btoa(seg.slice(i, i + CHUNK_SIZE));
-      if (!await sendAndAck(`DATA ${encoded}`)) throw new Error('DATA 未收到 ACK');
-    }
-    if (!await sendAndAck('END')) throw new Error('END 未收到 ACK');
-    return true;
-  }
-
-  // ── 傳送全部 ──
   async function sendTypingJob() {
     if (busy) return;
     if (!isConnected()) throw new Error('請先連線');
-    const raw = textInput.value;
-    if (!raw.trim()) throw new Error('請先輸入文字');
-    const text = raw;
+    const bytes = enc.encode(textInput.value);
+    if (!bytes.length) throw new Error('請先輸入文字');
+    if (bytes.length > 16 * 1024 * 1024) throw new Error('文字超過 16 MB');
+    if (textInput.value.includes('\0')) throw new Error('剪貼簿不支援 NUL 字元');
     busy = true; stopFlag = false;
-    const cps = Number(speedEl.value);
-    const switchIme = autoImeEl.checked ? '1' : '0';
-    const imeCmd = imeCmdEl.value || 'NONE';
-    const total = text.length;
-    let sent = 0;
-    logBox.textContent = `傳送「」`;
-    for (let i = 0; i < total; i += SEG_SIZE) {
-      if (stopFlag) break;
-      const seg = text.slice(i, i + SEG_SIZE);
-      setStatus(`傳送中 ${sent}/${total}`);
-      const segIme = (i === 0) ? switchIme : '0';
-      await sendSegment(seg, cps, segIme, imeCmd);
-      sent += seg.length;
-    }
-    // 所有資料傳完，開發板開始打字，此時才開始同步顯示
-    startTypingSync(text, cps);
-    await waitDone();
-    setStatus('完成'); busy = false;
+    try {
+      await sendAndAck(`BEGIN ${bytes.length}`);
+      for (let i = 0; i < bytes.length; i += 9) {
+        if (stopFlag) throw new Error('已停止');
+        // Encode bytes, never UTF-16 strings. Each BLE command fits 20 bytes.
+        const encoded = btoa(String.fromCharCode(...bytes.subarray(i, i + 9)));
+        await sendAndAck(`DATA ${encoded}`);
+        setStatus(`傳送中 ${Math.min(i + 9, bytes.length)}/${bytes.length} bytes`);
+      }
+      if (stopFlag) throw new Error('已停止');
+      setStatus('等待電腦貼上…');
+      await sendAndAck('END');
+      setStatus('已送出貼上'); logBox.textContent = '電腦已執行貼上，請確認目標輸入框。';
+    } catch (error) {
+      if (isConnected()) { try { await sendLine('STOP'); } catch {} }
+      throw error;
+    } finally { busy = false; }
   }
 
   // ── GitHub TXT 庫存 ──
@@ -446,9 +426,9 @@
     try { await sendTypingJob(); }
     catch (e) { stopTypingSync(); busy = false; logBox.textContent = '傳送失敗：' + e.message; setStatus('傳送失敗'); }
   });
-  document.getElementById('btnStop').addEventListener('click', async () => {
-    stopFlag = true; stopTypingSync();
-    try { await sendLine('STOP'); logBox.textContent = '已停止'; } catch (e) { logBox.textContent = 'STOP 失敗：' + e.message; }
+  document.getElementById('btnStop').addEventListener('click', () => {
+    stopFlag = true;
+    logBox.textContent = '正在停止；已執行的貼上無法撤回。';
   });
   document.getElementById('btnPaste').addEventListener('click', async () => {
     try {
