@@ -100,7 +100,7 @@ https://adafruit.github.io/arduino-board-index/package_adafruit_index.json
 
 ## 開啟 WebTyper
 
-![WebTyper 網頁介面](https://raw.githubusercontent.com/Mixcyanx/WebTyper/refs/heads/main/ScreenShots/20261002.jpg)
+![WebTyper 網頁介面](https://raw.githubusercontent.com/Mixcyanx/WebTyper/refs/heads/main/ScreenShots/Galaxy-S22%2B-mixcyanx.github.io.png)
 
 將 `index.html` 放到 HTTPS 網站，從支援 Web Bluetooth 的瀏覽器開啟。手機端連接開發板藍牙，開發板的 USB 則接到要輸入文字的電腦。
 
