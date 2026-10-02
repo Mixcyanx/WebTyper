@@ -1,8 +1,0 @@
-﻿import java.util.*;
-public class main {
-public static void main(String[] args) {
-Scanner in=new Scanner(System.in);
-String s=in.nextLine();
-String a=in.nextLine();
-String b=in.nextLine();
-System.out.print(s.replace(a,b)+"\r\n");}}

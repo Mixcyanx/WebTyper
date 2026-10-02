@@ -1,9 +1,0 @@
-﻿import java.util.*;
-public class main {
-public static void main(String[] args) {
-Scanner s = new Scanner(System.in);
-int n = s.nextInt();
-int m = s.nextInt();
-System.out.println(f(n, m)); }
-static int f(int n, int m) {
-return m == 0 ? 1 : n * f(n, m - 1); }}

@@ -1,9 +1,0 @@
-﻿import java.util.*;
-public class main {
-public static void main(String[] args) {
-Scanner in = new Scanner(System.in);
-String s = in.next();
-int a = in.nextInt();
-int b = in.nextInt();
-if(a-b-1<0||a-1>=s.length()){System.out.print("NULL String\r\n");return;}
-System.out.print(s.substring(0,a-b-1)+s.substring(a-1)+"\r\n");}}

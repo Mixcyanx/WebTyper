@@ -1,8 +1,0 @@
-﻿import java.util.*;
-public class main {
-public static void main(String[] args) {
-Scanner s = new Scanner(System.in);
-String str = s.next();
-System.out.println(f(str, 0, str.length() - 1) ? "Yes" : "No"); }
-static boolean f(String str, int l, int r) {
-return l >= r ? true : (str.charAt(l) == str.charAt(r) && f(str, l + 1, r - 1)); }}

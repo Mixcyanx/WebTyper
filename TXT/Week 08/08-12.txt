@@ -1,7 +1,0 @@
-﻿import java.util.*;
-public class main {
-public static void main(String[] args) {
-Scanner in=new Scanner(System.in);
-String s=in.next();
-int p=s.indexOf('@');
-System.out.print(s.substring(0,p));}}

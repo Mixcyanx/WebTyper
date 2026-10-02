@@ -1,9 +1,0 @@
-﻿import java.util.*;
-public class main {
-public static void main(String[] args) {
-Scanner in = new Scanner(System.in);
-String a = in.next();
-String b = in.next();
-a = a.toLowerCase();
-b = b.toLowerCase();
-System.out.println(a.substring(a.length() - 3).equals(b.substring(b.length() - 3)) ? "YES" : "NO");}}
