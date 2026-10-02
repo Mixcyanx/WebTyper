@@ -93,26 +93,6 @@ https://adafruit.github.io/arduino-board-index/package_adafruit_index.json
 
 首屏可以直接連接裝置並貼上文字；右上角漢堡選單可調整輸入速度及輸入法切換快捷鍵。請先確認目標輸入框的游標與鍵盤配置，再按「開始傳送」。
 
-## 離線保存與還原
-
-另附 **WebTyper-offline-windows.zip**，保存目前的 Windows 編譯環境，而不只是開發板管理員網址。解壓縮後請先閱讀其中的 `OFFLINE-README.md`。
-
-備份包括：
-
-- 本機 Adafruit nRF52 1.7.0 核心、板型設定與其全部內建程式庫。
-- Windows 版 Arm GCC、CMSIS、nrfjprog，以及核心內附的 adafruit-nrfutil 上傳工具。
-- Arduino 的內建探索／監控工具與 ctags。
-- Arduino CLI 1.5.1、專案韌體、可攜式編譯／列埠／上傳腳本。
-- 套件索引快照、官方 1.7.0 原始發行壓縮檔、來源記錄與 SHA-256 檔案清單。
-
-這份備份的可執行工具只適用於 Windows；macOS / Linux 可以參考相同的 Arduino 教學和核心原始碼，但需要各自作業系統的工具鏈。備份沒有包含 Arduino IDE 圖形介面安裝程式、Windows 驅動程式或實體板上的 Bootloader 狀態。一般 USB 編譯／上傳所需工具會納入；J-Link / OpenOCD 除錯或重新燒錄 Bootloader 不在此備份的驗證範圍。
-
-備份保留各元件原有授權文件。保存或轉交整份套件時應一併保留這些文件；大型離線壓縮檔適合另存硬碟、雲端備份或專案 Release 附件，不宜直接加入一般 Git 原始碼紀錄。
-
-## 驗證紀錄
-
-2026-10-02 使用現有 Adafruit nRF52 1.7.0 與上述板型成功編譯原版韌體：程式空間 136,236 bytes，靜態 RAM 34,168 bytes。另外已使用離線備份中的獨立資料目錄、空白 sketchbook 與隨附 CLI 成功編譯（HTTP／HTTPS 代理指向不可用本機埠，避免補抓依賴）：程式空間 136,204 bytes，靜態 RAM 34,168 bytes。兩次建置位於不同路徑，產物大小略有差異。這代表編譯通過，不代表已對照片中的實體板完成上傳或鍵盤輸入測試。
-
 ## 參考來源
 
 - [Arduino IDE 官方下載](https://www.arduino.cc/en/software/)
