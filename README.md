@@ -6,12 +6,21 @@ WebTyper 是一款結合網頁介面與 nRF52840 開發板的無線文字輸入�
 
 網頁提供深色文字輸入區、貼上與清空、傳送與停止，以及漢堡選單中的速度和輸入法切換設定。目前支援英文、數字與 ASCII 符號，不支援中文或 Emoji；輸入結果會受到目標電腦鍵盤配置與輸入法影響。
 
+## 裝置外觀
+
+| 裸板 | 加上 3D 列印外殼 |
+| :---: | :---: |
+| <img src="https://raw.githubusercontent.com/Mixcyanx/WebTyper/refs/heads/main/Images/S__18849795.jpg" alt="WebTyper nRF52840 裸板" width="320"> | <img src="https://raw.githubusercontent.com/Mixcyanx/WebTyper/refs/heads/main/Images/S__18857990.jpg" alt="WebTyper 加上 3D 列印外殼" width="320"> |
+
 ## 準備項目
 
 - 本專案使用的 nRF52840 開發板，以及可傳輸資料的 USB 線或轉接器。
 - Windows、macOS 或 Linux 電腦，用於安裝 Arduino IDE 與上傳韌體。
 - 支援 Web Bluetooth 的瀏覽器；網頁必須透過 HTTPS 或 localhost 開啟。
+- 本專案的 `firmware/BLE_Typer/BLE_Typer.ino` 和 `index.html`。
 - 本專案的 `firmware/WebTyper/WebTyper.ino` 和 `index.html`。
+
+> 本專案提供的板子照片不能單憑外觀確定產品型號。以下 Arduino 板型依使用者提供的 IDE 截圖與原版 BLE_Typer 編譯紀錄確認，適用於目前這塊板子的既有配置；不代表任意 nRF52840 板子都能套用相同板型或 Bootloader。
 
 ## 安裝 Arduino IDE
 
@@ -64,12 +73,19 @@ https://adafruit.github.io/arduino-board-index/package_adafruit_index.json
 | --- | --- |
 | 開發板套件 | Adafruit nRF52，1.7.0 |
 | 開發板 | **Adafruit Feather nRF52840 Express** |
+| SoftDevice | **S140 6.1.1** |
 | 連接埠 | 選擇這塊板子實際出現的埠 |
+
+使用者截圖中的埠是 `COM4`；其他電腦或重新進入 Bootloader 後可能不同，不能固定照填 COM4。Windows 通常顯示 COM 編號，macOS / Linux 則顯示對應的裝置路徑。
+
+本機保存的套件識別名稱是 `Adafruit_Package`，官方新安裝通常是 `adafruit`。這是套件目錄／FQBN 的差異，Arduino 選單中的板型名稱仍應選上述 Feather nRF52840 Express。
 
 ## Arduino 編譯與上傳教學
 
-1. 開啟 `firmware/WebTyper/WebTyper.ino`。請保留 `WebTyper` 資料夾與 `.ino` 檔案相同的名稱。
+1. 開啟 `firmware/BLE_Typer/BLE_Typer.ino`。請保留 `BLE_Typer` 資料夾與 `.ino` 檔案相同的名稱。
 2. 依上表選擇開發板、SoftDevice 及實際連接埠。
+1. 開啟 `firmware/WebTyper/WebTyper.ino`。請保留 `WebTyper` 資料夾與 `.ino` 檔案相同的名稱。
+2. 依上表選擇開發板及實際連接埠。
 3. 點左上角「驗證」勾號，等待編譯完成。驗證只會編譯，不會把韌體寫入板子。
 4. 確認板子已接好、Serial Monitor 等程式沒有佔用連接埠。
 5. 點左上角向右箭頭「上傳」，等待 IDE 顯示完成。
@@ -89,9 +105,31 @@ https://adafruit.github.io/arduino-board-index/package_adafruit_index.json
 
 ## 開啟 WebTyper
 
+![WebTyper 網頁介面](https://raw.githubusercontent.com/Mixcyanx/WebTyper/refs/heads/main/ScreenShots/20261002.jpg)
+
 將 `index.html` 放到 HTTPS 網站，從支援 Web Bluetooth 的瀏覽器開啟。手機端連接開發板藍牙，開發板的 USB 則接到要輸入文字的電腦。
 
 首屏可以直接連接裝置並貼上文字；右上角漢堡選單可調整輸入速度及輸入法切換快捷鍵。請先確認目標輸入框的游標與鍵盤配置，再按「開始傳送」。
+
+## 離線保存與還原
+
+另附 **WebTyper-offline-windows.zip**，保存目前的 Windows 編譯環境，而不只是開發板管理員網址。解壓縮後請先閱讀其中的 `OFFLINE-README.md`。
+
+備份包括：
+
+- 本機 Adafruit nRF52 1.7.0 核心、板型設定與其全部內建程式庫。
+- Windows 版 Arm GCC、CMSIS、nrfjprog，以及核心內附的 adafruit-nrfutil 上傳工具。
+- Arduino 的內建探索／監控工具與 ctags。
+- Arduino CLI 1.5.1、專案韌體、可攜式編譯／列埠／上傳腳本。
+- 套件索引快照、官方 1.7.0 原始發行壓縮檔、來源記錄與 SHA-256 檔案清單。
+
+這份備份的可執行工具只適用於 Windows；macOS / Linux 可以參考相同的 Arduino 教學和核心原始碼，但需要各自作業系統的工具鏈。備份沒有包含 Arduino IDE 圖形介面安裝程式、Windows 驅動程式或實體板上的 Bootloader 狀態。一般 USB 編譯／上傳所需工具會納入；J-Link / OpenOCD 除錯或重新燒錄 Bootloader 不在此備份的驗證範圍。
+
+備份保留各元件原有授權文件。保存或轉交整份套件時應一併保留這些文件；大型離線壓縮檔適合另存硬碟、雲端備份或專案 Release 附件，不宜直接加入一般 Git 原始碼紀錄。
+
+## 驗證紀錄
+
+2026-10-02 使用現有 Adafruit nRF52 1.7.0 與上述板型成功編譯原版韌體：程式空間 136,236 bytes，靜態 RAM 34,168 bytes。另外已使用離線備份中的獨立資料目錄、空白 sketchbook 與隨附 CLI 成功編譯（HTTP／HTTPS 代理指向不可用本機埠，避免補抓依賴）：程式空間 136,204 bytes，靜態 RAM 34,168 bytes。兩次建置位於不同路徑，產物大小略有差異。這代表編譯通過，不代表已對照片中的實體板完成上傳或鍵盤輸入測試。
 
 ## 參考來源
 
